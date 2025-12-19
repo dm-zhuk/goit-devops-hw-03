@@ -57,7 +57,7 @@ fi
 if ! python3 -m django --version &> /dev/null;
 then
     echo "Django not found. Installing..."
-    pip3 install django
+    pip3 install django --break-system-packages
 else
     echo "Django $(python3 -m django --version) is already installed."
 fi
@@ -65,10 +65,4 @@ fi
 echo "🟢 Success: all tools installed, setup complete!"
 
 # chmod u+x install_dev_tools.sh
-# to install development tools:
 # ./install_dev_tools.sh
-
-# git checkout -b lesson-3
-# git add install_dev_tools.sh
-# git commit -m "Add Bash script for installing Docker, Docker Compose, Python, and Django"
-# git push origin lesson-3
