@@ -62,11 +62,12 @@ else
     echo "Django $(python3 -m django --version) is already installed."
 fi
 
-# Add local bin to PATH if not already present
-export PATH="$PATH:$HOME/.local/bin"
+if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+    echo 'export PATH="$PATH:$HOME/.local/bin"' >> ~/.bashrc
+    export PATH="$PATH:$HOME/.local/bin"
+fi
 
 echo "🟢 Success: all tools installed, setup complete!"
-echo "Please run 'source ~/.bashrc' or restart your terminal to update your PATH."
 
-# chmod u+x install_dev_tools.sh
-# ./install_dev_tools.sh
+
+# source ~/.bashrc
