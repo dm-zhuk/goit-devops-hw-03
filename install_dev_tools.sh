@@ -21,9 +21,9 @@ then
     sudo apt-get install -y docker.io
     sudo systemctl start docker
     sudo systemctl enable docker
-    # Add user to group (effect takes place after logout/login)
+    # Add $user to group
     sudo usermod -aG docker "$USER"
-    echo "! You may need to log out and back in for docker permissions to update."
+    echo "Update docker permissions: log out/log in."
 fi
 
 # 3. Install Docker Compose
@@ -38,9 +38,8 @@ then
     sudo apt-get install -y python3
 fi
 
-# Version verification logic
-PYTHON_VERSION=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
 # Compare versions
+PYTHON_VERSION=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
 if [[ $(echo "$PYTHON_VERSION < 3.9" | bc -l 2>/dev/null) -eq 1 ]];
 then
     echo "Python version is $PYTHON_VERSION. Updating to a newer version is recommended."
@@ -48,7 +47,7 @@ else
     echo "Python version $PYTHON_VERSION meets the 3.9+ requirement."
 fi
 
-# 5. Install Pip and Django
+# 5. Install Pip, Django
 if ! check_install pip3;
 then
     sudo apt-get install -y python3-pip

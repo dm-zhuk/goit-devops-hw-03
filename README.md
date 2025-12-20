@@ -4,10 +4,10 @@ This repository contains a Bash script to automate the installation of essential
 
 ## Tools Installed
 
-* **Docker**: Containerization platform.
-* **Docker Compose**: Tool for defining and running multi-container applications.
-* **Python 3.9+**: Programming language.
-* **Django**: High-level Python web framework.
+* **Docker**
+* **Docker Compose**
+* **Python 3.9+**
+* **Django**
 
 ## How to Use
 
