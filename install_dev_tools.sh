@@ -70,3 +70,5 @@ echo "🟢 Success: all tools installed, setup complete!"
 
 
 # source ~/.bashrc
+# chmod u+x install_dev_tools.sh
+# ./install_dev_tools.sh
