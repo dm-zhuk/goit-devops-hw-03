@@ -16,4 +16,7 @@ This repository contains a Bash script to automate the installation of essential
    chmod u+x install_dev_tools.sh
 2. **Run the installation on an Ubuntu system:**
    ```bash
+   source ~/.bashrc
+   chmod u+x install_dev_tools.sh
    ./install_dev_tools.sh
+   

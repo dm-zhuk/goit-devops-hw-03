@@ -40,7 +40,7 @@ fi
 
 # Compare versions
 PYTHON_VERSION=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
-if [[ $(echo "$PYTHON_VERSION < 3.9" | bc -l 2>/dev/null) -eq 1 ]];
+if [[ $(echo "$PYTHON_VERSION < 3.9" | bc -l 2>/dev/null) -eq 1 ]]; # Залежність від bc: краще використовувати bash-арифметику
 then
     echo "Python version is $PYTHON_VERSION. Updating to a newer version is recommended."
 else
@@ -56,7 +56,7 @@ fi
 if ! python3 -m django --version &> /dev/null;
 then
     echo "Django not found. Installing..."
-    pip3 install django --break-system-packages
+    pip3 install django --break-system-packages  # Додати коментар про PEP 668 для флагу --break-system-packages
 else
     echo "Django $(python3 -m django --version) is already installed."
 fi
@@ -67,8 +67,3 @@ if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
 fi
 
 echo "🟢 Success: all tools installed, setup complete!"
-
-
-# source ~/.bashrc
-# chmod u+x install_dev_tools.sh
-# ./install_dev_tools.sh
