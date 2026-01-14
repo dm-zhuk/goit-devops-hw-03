@@ -1,0 +1,11 @@
+.
+├── django-goit
+│   ├── Dockerfile
+│   ├── core
+│   │   └── settings.py
+│   ├── docker-compose.yaml
+│   ├── nginx
+│   │   └── nginx.conf
+│   └── requirements.txt
+├── project_structure.txt
+└── venv/
