@@ -2,8 +2,13 @@
 ├── django-goit
 │   ├── Dockerfile
 │   ├── core
-│   │   └── settings.py
+│   │   ├── __init__.py
+│   │   ├── asgi.py
+│   │   ├── settings.py
+│   │   ├── urls.py
+│   │   └── wsgi.py
 │   ├── docker-compose.yaml
+│   ├── manage.py
 │   ├── nginx
 │   │   └── nginx.conf
 │   └── requirements.txt

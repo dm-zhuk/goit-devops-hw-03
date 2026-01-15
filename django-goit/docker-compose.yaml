@@ -19,10 +19,9 @@ services:
       retries: 5
 
   django:
-    build:
-      context: ./django-goit
+    build: .
     container_name: django_app
-    command: gunicorn, --bind, 0.0.0.0:8000, core.wsgi:application
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
     environment:
@@ -30,15 +29,13 @@ services:
       - DB_USER=admin
       - DB_PASS=pass
       - DB_HOST=db
-    ports:
-      - "8000:8000"
     depends_on:
       db:
         condition: service_healthy
 
   nginx:
     image: nginx:latest
-    container_name: nginx
+    container_name: nginx_proxy
     ports:
       - "80:80"
     volumes:
