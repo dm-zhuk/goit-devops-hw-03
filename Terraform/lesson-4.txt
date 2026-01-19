@@ -1,4 +1,0 @@
-git checkout -b lesson-5
-git add .
-git commit -m "Add Dockerized Django project with PostgreSQL and Nginx"
-git push origin lesson-5
