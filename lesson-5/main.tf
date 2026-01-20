@@ -9,12 +9,12 @@ terraform {
 }
 
 provider "aws" {
-  region  = "us-east-2"
+  region = "eu-west-1"
 }
 
 module "s3_backend" {
   source      = "./modules/s3-backend"
-  bucket_name = "terraform-state-bucket-2026"
+  bucket_name = "dmjuke-goit-tf-state-2026"
   table_name  = "terraform-locks"
 }
 
@@ -23,7 +23,7 @@ module "vpc" {
   vpc_cidr_block     = "10.0.0.0/16"
   public_subnets     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
   private_subnets    = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
-  availability_zones = ["us-east-2a", "us-east-2b", "us-east-2c"]
+  availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
   vpc_name           = "lesson-5-vpc"
 }
 

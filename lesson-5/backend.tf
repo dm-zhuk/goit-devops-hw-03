@@ -1,9 +1,11 @@
+/*
 terraform {
   backend "s3" {
-    bucket         = "terraform-state-bucket-2026"
+    bucket         = "dmjuke-goit-tf-state-2026"
     key            = "lesson-5/terraform.tfstate"
-    region         = "us-east-2"
+    region         = "eu-west-1"
     dynamodb_table = "terraform-locks"
     encrypt        = true
   }
 }
+*/

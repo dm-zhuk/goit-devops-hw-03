@@ -1,5 +1,5 @@
 resource "aws_dynamodb_table" "terraform_locks" {
-  name         = var.lock_table_name 
+  name         = var.table_name
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "LockID"
 
@@ -10,7 +10,7 @@ resource "aws_dynamodb_table" "terraform_locks" {
 
   tags = {
     Name        = "Terraform Lock Table"
-    Environment = var.environment
+    Environment = "lesson-5"
     ManagedBy   = "Terraform"
   }
 }
