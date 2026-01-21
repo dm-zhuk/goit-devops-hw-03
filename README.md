@@ -1,22 +1,27 @@
-# DevOps Course Projects
+# Lesson-5 Terraform Project
 
-This repository serves as a hub for my DevOps learning journey. To keep the workspace organized, each lesson is contained within its own dedicated branch.
+This project sets up AWS infrastructure using Terraform: S3+DynamoDB for state, VPC with subnets, and ECR repo.
 
-## Navigation by Lesson
-- **[Lesson 3: Environment Setup](https://github.com/dm-zhuk/goit-devops-hw-03/tree/lesson-3)** - Shell scripting and automated installs.
+## Project Structure
 
-- **[Lesson 4: Docker & Django](https://github.com/dm-zhuk/goit-devops-hw-03/tree/lesson-4)** - Containerizing a Django app with PostgreSQL and Nginx.
+- `main.tf`: Provider and module calls.
+- `backend.tf`: Remote state config (S3 + DynamoDB).
+- `outputs.tf`: Aggregated outputs.
+- `modules/s3-backend/`: Creates S3 bucket (versioned, encrypted) and DynamoDB lock table.
+- `modules/vpc/`: Creates VPC, 3 public/3 private subnets, IGW, NAT Gateway, and route tables.
+- `modules/ecr/`: Creates ECR repo with scan-on-push and access policy.
 
-- **[Lesson 5: Terraform & AWS](https://github.com/dm-zhuk/goit-devops-hw-03/tree/lesson-5)** - Managing AWS infrastructure (VPC, S3, ECR) using Terraform modules.
+## Usage Commands
 
-- **[Lesson 7: Kubernetes & Helm](https://github.com/dm-zhuk/goit-devops-hw-03/tree/lesson-7)** - Creating a Kubernetes cluster.
-1. Create a Kubernetes cluster using Terraform.
+1. Initialize: `terraform init`
+2. Plan: `terraform plan`
+3. Apply: `terraform apply`
+4. Destroy: `terraform destroy`
 
-2. Set up Elastic Container Registry (ECR) to store your Django application Docker image.
+Note: For backend, initially comment out backend.tf, apply to create resources, then uncomment and run `terraform init -migrate-state`.
 
-3. Upload the Django Docker image to ECR.
+## Module Explanations
 
-4. Create a helm chart (deployment.yaml, service.yaml, hpa.yaml, configmap.yaml)
-
----
-*Main branch contains only this navigation guide. Switch branches to view specific project code.*
+- **s3-backend**: Stores Terraform state remotely with versioning and locking for team safety.
+- **vpc**: Builds isolated network with public (internet-accessible) and private (outbound via NAT) subnets across 3 AZs for high availability.
+- **ecr**: Registry for Docker images, with automatic vulnerability scanning.
