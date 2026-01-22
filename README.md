@@ -9,14 +9,9 @@ This repository serves as a hub for my DevOps learning journey. To keep the work
 
 - **[Lesson 5: Terraform & AWS](https://github.com/dm-zhuk/goit-devops-hw-03/tree/lesson-5)** - Managing AWS infrastructure (VPC, S3, ECR) using Terraform modules.
 
-- **[Lesson 7: Kubernetes & Helm](https://github.com/dm-zhuk/goit-devops-hw-03/tree/lesson-7)** - Creating a Kubernetes cluster.
-1. Create a Kubernetes cluster using Terraform.
+- **[Lesson 7: Kubernetes & Helm](https://github.com/dm-zhuk/goit-devops-hw-03/tree/lesson-7)** - Creating a Kubernetes cluster using Terraform.
 
-2. Set up Elastic Container Registry (ECR) to store your Django application Docker image.
-
-3. Upload the Django Docker image to ECR.
-
-4. Create a helm chart (deployment.yaml, service.yaml, hpa.yaml, configmap.yaml)
+- **[Lesson 8-9: Kubernetes & Helm](https://github.com/dm-zhuk/goit-devops-hw-03/tree/lesson-8-9)** - CI/CD - Jenkins + Helm + Terraform + Argo CD.
 
 ---
 *Main branch contains only this navigation guide. Switch branches to view specific project code.*
