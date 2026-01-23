@@ -24,11 +24,43 @@ module "vpc" {
   public_subnets     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
   private_subnets    = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
   availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
-  vpc_name           = "lesson-5-vpc"
+  vpc_name           = "lesson-8-9-vpc"
 }
 
 module "ecr" {
   source       = "./modules/ecr"
-  ecr_name     = "lesson-5-ecr"
+  ecr_name     = "lesson-8-9-ecr"
+  environment = "dev"
   scan_on_push = true
+}
+
+module "eks" {
+  source          = "./modules/eks"          
+  cluster_name    = "eks-cluster-demo"
+  subnet_ids      = module.vpc.public_subnets
+  instance_type   = "t2.micro"
+  desired_size    = 1
+  max_size        = 2
+  min_size        = 1
+}
+
+data "aws_eks_cluster_auth" "eks" {
+  name = var.cluster_name
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = data.aws_eks_cluster.eks.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
+    token                  = data.aws_eks_cluster_auth.eks.token
+  }
+}
+
+module "jenkins" {
+  source       = "./modules/jenkins"
+  cluster_name = module.eks.eks_cluster_name
+
+  providers = {
+    helm = helm
+  }
 }
