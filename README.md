@@ -14,7 +14,7 @@ This repository contains a professional, containerized Django application integr
 
 1. VM Preparation (macOS Terminal)Mount your local project directory to your Multipass VM to enable real-time code syncing between your Mac and the Linux environment:
 
-#Replace ~/path/to/... with your actual local path
+>> Replace ~/path/to/... with your actual local path
 multipass mount ~/path/to/django-goit docker-vm:/home/ubuntu/django-goit
 
 2. Environment SetupCreate your local environment file from the template:
@@ -28,6 +28,7 @@ Note: Ensure DEBUG=True for local development and DEBUG=False for production tes
 multipass shell docker-vm
 
 cd ~/django-goit
+chmod +x ~/django-goit/entrypoint.sh
 
 ### Option A: Development Mode (Fast Coding)
 Standard mode with Django's auto-reload server and detailed error pages:
@@ -42,16 +43,13 @@ sudo docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build
 
 ## Maintenance & Commands
 
-Create Admin
+>> Create Admin
 sudo docker-compose exec django python manage.py createsuperuser
 
-Collect Static
+>> Collect Static
 docker-compose exec django python manage.py collectstatic --noinput
 
-Stop All
-docker-compose down
-
-Clean Wipe
+>> Clean Wipe
 docker-compose down -v (Warning: Deletes Database data)
 
 
