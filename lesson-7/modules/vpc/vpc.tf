@@ -51,7 +51,7 @@ resource "aws_eip" "nat" {
 }
 
 # Create NAT Gateway in the first public subnet (for outbound from private subnets)
-resource "aws_" "nat" {
+resource "aws_nat_gateway" "nat" {
   allocation_id = aws_eip.nat.id
   subnet_id     = aws_subnet.public[0].id
 

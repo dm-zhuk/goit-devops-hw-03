@@ -1,4 +1,4 @@
-# Lesson-5 Terraform Project
+# Lesson-7 Terraform Project
 
 This project sets up AWS infrastructure using Terraform: S3+DynamoDB for state, VPC with subnets, and ECR repo.
 

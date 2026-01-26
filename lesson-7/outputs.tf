@@ -25,5 +25,15 @@ output "private_subnet_ids" {
 
 output "ecr_repository_url" {
   value       = module.ecr.ecr_repository_url
-  description = "URL of the ECR repository"
+  description = "The full URL of the ECR repository (for docker push/pull)"
+}
+
+output "eks_cluster_endpoint" {
+  value       = module.eks.cluster_endpoint
+  description = "Endpoint for EKS control plane"
+}
+
+output "eks_cluster_name" {
+  value       = module.eks.cluster_name
+  description = "Name of the EKS cluster"
 }

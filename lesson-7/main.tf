@@ -14,8 +14,8 @@ provider "aws" {
 
 module "s3_backend" {
   source      = "./modules/s3-backend"
-  bucket_name = "dmjuke-goit-tf-state-2026"
-  table_name  = "terraform-locks"
+  bucket_name = "dmjuke-goit-tf-state-lesson7-2026""
+  table_name  = "terraform-locks-lesson7"
 }
 
 module "vpc" {
@@ -24,11 +24,22 @@ module "vpc" {
   public_subnets     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
   private_subnets    = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
   availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
-  vpc_name           = "lesson-5-vpc"
+  vpc_name           = "lesson-7-vpc"
 }
 
 module "ecr" {
   source       = "./modules/ecr"
-  ecr_name     = "lesson-5-ecr"
+  ecr_name     = "lesson-7-django-ecr"
   scan_on_push = true
+}
+
+module "eks" {
+  source = "./modules/eks"
+
+  cluster_name    = "lesson-7-eks-cluster"
+  vpc_id          = module.vpc.vpc_id
+  subnet_ids      = module.vpc.private_subnet_ids  # EKS in private subnets for security
+  desired_size    = 2  # Number of nodes (start small)
+  min_size        = 1
+  max_size        = 3
 }
