@@ -1,0 +1,36 @@
+.
+├── README.md
+├── lesson-7
+│   ├── main.tf
+│   ├── outputs.tf
+│   └── terraform.tfvars
+│   ├── backend.tf
+│   ├── charts
+│   │   └── django-app
+│   │       ├── Chart.yaml
+│   │       ├── templates
+│   │       │   ├── configmap.yaml
+│   │       │   ├── deployment.yaml
+│   │       │   ├── hpa.yaml
+│   │       │   └── service.yaml
+│   │       └── values.yaml
+│   ├── modules
+│   │   ├── ecr
+│   │   │   ├── ecr.tf
+│   │   │   ├── outputs.tf
+│   │   │   └── variables.tf
+│   │   ├── eks
+│   │   │   ├── eks.tf
+│   │   │   ├── node.tf
+│   │   │   ├── outputs.tf
+│   │   │   └── variables.tf
+│   │   ├── s3-backend
+│   │   │   ├── dynamodb.tf
+│   │   │   ├── outputs.tf
+│   │   │   ├── s3.tf
+│   │   │   └── variables.tf
+│   │   └── vpc
+│   │       ├── outputs.tf
+│   │       ├── routes.tf
+│   │       ├── variables.tf
+│   │       └── vpc.tf

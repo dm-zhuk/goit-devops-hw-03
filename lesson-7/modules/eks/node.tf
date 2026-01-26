@@ -1,7 +1,7 @@
 # IAM Role for EC2 Worker Nodes
-resource "aws_iam_role" "nodes" {
+resource "aws_iam_role" "eks_node" {
   # Name of the role for the nodes
-  name = "${var.cluster_name}-eks-nodes"
+  name = "${var.cluster_name}-node-role"
 
   # Trust policy allowing EC2 service to assume this role
   assume_role_policy = jsonencode({
@@ -19,21 +19,21 @@ resource "aws_iam_role" "nodes" {
 }
 
 # Attachment of the AmazonEKSWorkerNodePolicy
-resource "aws_iam_role_policy_attachment" "amazon_eks_worker_node_policy" {
+"eks_worker_node_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.nodes.name
+  role       = aws_iam_role.eks_node.name
 }
 
 # Attachment of the AmazonEKS_CNI_Policy for the VPC CNI plugin
-resource "aws_iam_role_policy_attachment" "amazon_eks_cni_policy" {
+resource "aws_iam_role_policy_attachment" "eks_cni_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.nodes.name
+  role       = aws_iam_role.eks_node.name
 }
 
 # Attachment of the AmazonEC2ContainerRegistryReadOnly policy
-resource "aws_iam_role_policy_attachment" "amazon_ec2_container_registry_read_only" {
+resource "aws_iam_role_policy_attachment" "ecr_readonly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.nodes.name
+  role       = aws_iam_role.eks_node.name
 }
 
 # EKS Node Group creation
@@ -61,6 +61,12 @@ resource "aws_eks_node_group" "general" {
     min_size     = var.min_size      # Minimum number of nodes
   }
 
+  # Ignore changes to desired_size to avoid conflicts with Auto Scaling
+  lifecycle {
+    ignore_changes = [scaling_config[0].desired_size]
+  }
+}
+
   # Node update configuration
   update_config {
     max_unavailable = 1  # Maximum number of nodes that can be unavailable during update
@@ -75,11 +81,5 @@ resource "aws_eks_node_group" "general" {
   depends_on = [
     aws_iam_role_policy_attachment.amazon_eks_worker_node_policy,
     aws_iam_role_policy_attachment.amazon_eks_cni_policy,
-    aws_iam_role_policy_attachment.amazon_ec2_container_registry_read_only,
+    aws_iam_role_policy_attachment.ecr_readonly
   ]
-
-  # Ignore changes to desired_size to avoid conflicts with Auto Scaling
-  lifecycle {
-    ignore_changes = [scaling_config[0].desired_size]
-  }
-}
