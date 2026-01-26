@@ -1,6 +1,6 @@
 variable "region" {
   type        = string
-  description = "AWS region"
+  description = "AWS region - passed from root"
 }
 
 variable "cluster_name" {

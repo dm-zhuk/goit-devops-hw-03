@@ -59,12 +59,6 @@ resource "aws_eks_cluster" "cluster" {
     endpoint_public_access  = true   # API server also accessible publicly
   }
 
-  # Access configuration: IAM authentication, grants cluster creator admin permissions automatically
-  access_config {
-    authentication_mode                         = "API"
-    bootstrap_cluster_creator_admin_permissions = true
-  }
-
   # Ensure IAM policies are attached before creating cluster
   depends_on = [
     aws_iam_role_policy_attachment.eks_cluster_policy,

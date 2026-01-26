@@ -7,7 +7,7 @@ resource "aws_ecr_repository" "repo" {
     scan_on_push = var.scan_on_push
   }
   tags = {
-    Name = "lesson-5-ecr-repo"
+    Name = "lesson-7-ecr-repo"
   }
 }
 

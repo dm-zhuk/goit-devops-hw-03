@@ -1,19 +1,29 @@
-output "eks_cluster_endpoint" {
-  description = "EKS API endpoint for connecting to the cluster"
-  value       = aws_eks_cluster.eks.endpoint
+# Endpoint of the EKS control plane (for kubectl)
+output "cluster_endpoint" {
+  description = "EKS cluster API server endpoint URL"
+  value       = aws_eks_cluster.cluster.endpoint
 }
 
-output "eks_cluster_certificate_authority_data" {
-  description = "Base64 encoded certificate data required to communicate with the cluster"
-  value       = aws_eks_cluster.eks.certificate_authority[0].data
+# Certificate authority data (base64) for kubeconfig
+output "cluster_certificate_authority_data" {
+  description = "Base64-encoded CA certificate for cluster authentication"
+  value       = aws_eks_cluster.cluster.certificate_authority[0].data
 }
 
-output "eks_cluster_name" {
+# Cluster name (for aws eks commands)
+output "cluster_name" {
   description = "Name of the EKS cluster"
-  value       = aws_eks_cluster.eks.name
+  value       = aws_eks_cluster.cluster.name
 }
 
-output "eks_node_role_arn" {
-  description = "IAM role ARN for EKS Worker Nodes"
-  value       = aws_iam_role.nodes.arn
+# Node group name (for scaling/debugging)
+output "node_group_name" {
+  description = "Name of the managed node group"
+  value       = aws_eks_node_group.general.node_group_name
+}
+
+# Node IAM role ARN (optional, for IRSA or debugging)
+output "node_role_arn" {
+  description = "IAM role ARN for EKS worker nodes"
+  value       = aws_iam_role.eks_node.arn
 }

@@ -14,7 +14,7 @@ provider "aws" {
 
 module "s3_backend" {
   source      = "./modules/s3-backend"
-  bucket_name = "dmjuke-goit-tf-state-lesson7-2026" 
+  bucket_name = "dmjuke-goit-tf-state-lesson7-2026"
   table_name  = "terraform-locks-lesson7"
 }
 
@@ -36,11 +36,12 @@ module "ecr" {
 module "eks" {
   source = "./modules/eks"
 
-  cluster_name    = var.cluster_name
-  vpc_id          = module.vpc.vpc_id
-  subnet_ids      = module.vpc.private_subnet_ids
-  instance_type   = var.instance_type
-  desired_size    = var.desired_size
-  min_size        = var.min_size
-  max_size        = var.max_size
+  region        = var.region
+  cluster_name  = var.cluster_name
+  vpc_id        = module.vpc.vpc_id
+  subnet_ids    = module.vpc.private_subnet_ids
+  instance_type = var.instance_type
+  desired_size  = var.desired_size
+  min_size      = var.min_size
+  max_size      = var.max_size
 }
