@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 resource "aws_ecr_repository" "repo" {
   name                 = var.ecr_name
   image_tag_mutability = "MUTABLE"
@@ -9,17 +11,19 @@ resource "aws_ecr_repository" "repo" {
   }
 }
 
-# Repository policy (allow push/pull from your account)
 resource "aws_ecr_repository_policy" "repo_policy" {
   repository = aws_ecr_repository.repo.name
-  policy     = jsonencode({
+
+  policy = jsonencode({
     Version = "2008-10-17",
     Statement = [
       {
-        Sid       = "AllowPushPull",
+        Sid       = "AllowAccountAccess",
         Effect    = "Allow",
-        Principal = "*",
-        Action    = [
+        Principal = {
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        },
+        Action = [
           "ecr:GetDownloadUrlForLayer",
           "ecr:BatchGetImage",
           "ecr:BatchCheckLayerAvailability",
