@@ -1,0 +1,10 @@
+# Stores env vars from values.yaml (transferred from hw lesson-4 — all my Django envs here).
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+data:
+  {{- range $key, $value := .Values.env }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}

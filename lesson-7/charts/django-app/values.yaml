@@ -1,0 +1,19 @@
+image:
+  repository: "829703038395.dkr.ecr.eu-west-1.amazonaws.com/lesson-7-django-ecr"
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 80
+
+hpa:
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 70
+
+env:
+  # From my lesson-4 - .env vars
+  DEBUG: "false"
+  SECRET_KEY:
+  DATABASE_URL:

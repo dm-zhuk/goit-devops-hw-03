@@ -1,27 +1,40 @@
-# Lesson-7 Terraform Project
+# Lesson-7: Kubernetes with Terraform, Docker, and Helm
 
-This project sets up AWS infrastructure using Terraform: S3+DynamoDB for state, VPC with subnets, and ECR repo.
+This project creates an EKS cluster in existing VPC, pushes Django Docker image to ECR, and deploys via Helm.
 
 ## Project Structure
 
-- `main.tf`: Provider and module calls.
-- `backend.tf`: Remote state config (S3 + DynamoDB).
-- `outputs.tf`: Aggregated outputs.
-- `modules/s3-backend/`: Creates S3 bucket (versioned, encrypted) and DynamoDB lock table.
-- `modules/vpc/`: Creates VPC, 3 public/3 private subnets, IGW, NAT Gateway, and route tables.
-- `modules/ecr/`: Creates ECR repo with scan-on-push and access policy.
+- `main.tf`, `backend.tf`, `outputs.tf` — root Terraform config
+- `modules/` — VPC, ECR, S3-backend (from lesson-5), new EKS
+- `charts/django-app/` — Helm chart for Django deployment
 
-## Usage Commands
+## Usage
 
-1. Initialize: `terraform init`
-2. Plan: `terraform plan`
-3. Apply: `terraform apply`
-4. Destroy: `terraform destroy`
+1. Initialize and apply Terraform:
+   ```bash
+   terraform init
+   terraform plan
+   terraform apply
 
-Note: For backend, initially comment out backend.tf, apply to create resources, then uncomment and run `terraform init -migrate-state`.
+2. Access EKS:
+   ```bash
+   aws eks update-kubeconfig --name lesson-7-eks-cluster --region eu-west-1
+   kubectl get nodes
 
-## Module Explanations
+3. Push Docker image to ECR (replace with your image):
+   ```bash
+   aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin <ECR_URL>
+   docker tag my-django-app:latest <ECR_URL>:latest
+   docker push <ECR_URL>:latest
 
-- **s3-backend**: Stores Terraform state remotely with versioning and locking for team safety.
-- **vpc**: Builds isolated network with public (internet-accessible) and private (outbound via NAT) subnets across 3 AZs for high availability.
-- **ecr**: Registry for Docker images, with automatic vulnerability scanning.
+4. Deploy Helm chart:
+   ```bash
+   cd charts/django-app
+   helm install django-release .
+   kubectl get svc django-release-service -o wide  # Get external IP
+
+5. Cleanup:
+   ```bash
+   helm uninstall django-release
+   terraform destroy
+   # Important! Manually release Elastic IP in console
