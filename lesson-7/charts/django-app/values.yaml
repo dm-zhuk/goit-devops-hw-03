@@ -1,19 +1,40 @@
 image:
-  repository: "829703038395.dkr.ecr.eu-west-1.amazonaws.com/lesson-7-django-ecr"
-  tag: "latest"
+  repository: "829703038395.dkr.ecr.eu-west-1.amazonaws.com/lesson-7-django-ecr"  # From terraform output ecr_repository_url
+  tag: "latest"                                                                   # Use specific tag (e.g. "v1.0") in prod
   pullPolicy: IfNotPresent
 
 service:
   type: LoadBalancer
-  port: 80
+  port: 80             # External port (browser hits this)
+  targetPort: 8000     # Container port (Django listens here)
 
 hpa:
+  enabled: true
   minReplicas: 2
   maxReplicas: 6
   targetCPUUtilizationPercentage: 70
 
+# Environment variables from lesson-4 .env
+# Note: In production move sensitive values (SECRET_KEY, DB creds) to Kubernetes Secret
 env:
-  # From my lesson-4 - .env vars
   DEBUG: "false"
-  SECRET_KEY:
-  DATABASE_URL:
+  SECRET_KEY: "7-msDOwMQmZhI9hncT9pRdpUoDrgu4dhhjFc7CvNkGdU1-i5QYYF_NgsThRiI9-_0yA"  # Secret in prod!
+  DATABASE_URL: "postgres://admin:pass7890@db:5432/django_db"
+  ALLOWED_HOSTS: "localhost,127.0.0.1"  # to be updated to real domain in prod
+  DB_NAME: "django_db"
+  DB_USER: "admin"
+  DB_PASS: "pass7890"                   # Secret in prod!
+  DB_HOST: "db"
+  DB_PORT: "5432"
+  POSTGRES_DB: "django_db"
+  POSTGRES_USER: "admin"
+  POSTGRES_PASSWORD: "pass3456"         # Secret in prod!
+
+# Resource requests & limits (helps scheduler + HPA accuracy)
+resources:
+  requests:
+    cpu: "250m"      # 0.25 vCPU
+    memory: "256Mi"
+  limits:
+    cpu: "500m"      # 0.5 vCPU
+    memory: "512Mi"
