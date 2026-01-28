@@ -1,7 +1,7 @@
 # Region and Cluster Identity
 region        = "eu-west-1"
 cluster_name  = "lesson-7-eks-cluster"
-instance_type = "t3.medium"
+instance_type = "t3.micro"
 
 # Network Configuration
 # vpc_id        = "vpc-050df141eeb306cbe"
