@@ -1,10 +1,10 @@
 FROM python:3.10-slim
 
-# 1. Prevent Python from writing .pyc files and buffering stdout
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+# 1. Fixed ENV syntax to avoid legacy warnings and reduce layers
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
-# 2. Install system dependencies (needed for psycopg2 and healthchecks)
+# 2. Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     gcc \
@@ -25,5 +25,5 @@ COPY . .
 RUN chmod +x /app/entrypoint.sh && \
     sed -i 's/\r$//' /app/entrypoint.sh
 
-# 6. Use the entrypoint script to run migrations and start Gunicorn
+# 6. Use the entrypoint script
 ENTRYPOINT ["/app/entrypoint.sh"]

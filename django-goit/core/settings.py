@@ -1,12 +1,15 @@
 import environ
 from pathlib import Path
 
-# 1. Setup Environment Variables
+# 1. Initialize environ
 env = environ.Env(DEBUG=(bool, False))
+
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
 env_file = BASE_DIR / ".env"
 if env_file.exists():
-    environ.Env.read_env(env_file)
+    environ.Env.read_env(str(env_file))
 
 # 2. Security Settings
 SECRET_KEY = env("SECRET_KEY")
