@@ -1,4 +1,3 @@
-/*
 terraform {
   backend "s3" {
     bucket         = "dmjuke-goit-tf-state-lesson7-2026"
@@ -8,4 +7,3 @@ terraform {
     encrypt        = true
   }
 }
-*/
