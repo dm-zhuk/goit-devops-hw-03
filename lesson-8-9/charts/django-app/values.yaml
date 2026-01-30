@@ -1,0 +1,29 @@
+image:
+  repository: "829703038395.dkr.ecr.eu-west-1.amazonaws.com/lesson-7-django-ecr"
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 8000
+
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 70
+
+env:
+  DEBUG: "true"
+  SECRET_KEY: "7-msDOwMQmZhI9hncT9pRdpUoDrgu4dhhjFc7CvNkGdU1-i5QYYF_NgsThRiI9-_0yA"
+  DATABASE_URL: "sqlite:////app/db.sqlite3"
+  ALLOWED_HOSTS: "*"   # temporary - to be changed to real domain in prod
+
+resources:
+  requests:
+    cpu: "250m"
+    memory: "256Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
