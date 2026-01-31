@@ -59,8 +59,16 @@ provider "helm" {
 module "jenkins" {
   source       = "./modules/jenkins"
   cluster_name = module.eks.eks_cluster_name
+  region       = var.region
 
   providers = {
     helm = helm
   }
+}
+
+module "argo_cd" {
+  source = "./modules/argo-cd"
+
+  cluster_name = module.eks.cluster_name
+  region       = var.region
 }

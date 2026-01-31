@@ -1,0 +1,101 @@
+pipeline {
+  agent {
+    kubernetes {
+      yaml '''
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: kaniko
+    image: gcr.io/kaniko-project/executor:v1.16.0-debug
+    imagePullPolicy: Always
+    command:
+    - sleep
+    args:
+    - infinity
+    volumeMounts:
+    - name: docker-config
+      mountPath: /kaniko/.docker
+  - name: git
+    image: alpine/git
+    command:
+    - sleep
+    args:
+    - infinity
+  volumes:
+  - name: docker-config
+    secret:
+      secretName: regcred   # ← create this secret with ECR creds
+      items:
+      - key: .dockerconfigjson
+        path: config.json
+'''
+      }
+    }
+
+  environment {
+    ECR_REPO = 'lesson-8-9-django-ecr'   # change to your ECR name
+    AWS_REGION = 'eu-west-1'
+    IMAGE_TAG = "${env.BUILD_NUMBER}"
+    GIT_REPO = 'https://github.com/dm-zhuk/goit-devops-hw-03.git'
+    GIT_BRANCH = 'lesson-8-9'
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        container('git') {
+          sh '''
+            git clone ${GIT_REPO} .
+            git checkout ${GIT_BRANCH}
+          '''
+        }
+      }
+    }
+
+    stage('Build & Push') {
+      steps {
+        container('kaniko') {
+          sh '''
+            /kaniko/executor \
+              --context `pwd` \
+              --dockerfile Dockerfile \
+              --destination ${ECR_REPO}:${IMAGE_TAG} \
+              --destination ${ECR_REPO}:latest \
+              --cache=true
+          '''
+        }
+      }
+    }
+
+    stage('Update Helm values & Push') {
+      steps {
+        container('git') {
+          withCredentials([usernamePassword(
+            credentialsId: 'github-pat',   // ← create this in Jenkins
+            usernameVariable: 'GIT_USER',
+            passwordVariable: 'GIT_TOKEN'
+          )]) {
+            sh '''
+              git config --global user.email "jenkins@ci"
+              git config --global user.name "Jenkins CI"
+              git remote set-url origin https://${GIT_USER}:${GIT_TOKEN}@github.com/dm-zhuk/goit-devops-hw-03.git
+              git checkout lesson-8-9
+              git pull origin lesson-8-9 --rebase
+              sed -i "s|image.tag: .*|image.tag: ${IMAGE_TAG}|" charts/django-app/values.yaml
+              git add charts/django-app/values.yaml
+              git commit -m "Jenkins: update image tag to ${IMAGE_TAG} [ci skip]" || echo "No changes"
+              git push origin lesson-8-9
+            '''
+          }
+        }
+      }
+    }
+  }
+
+  post {
+    always {
+      cleanWs()
+    }
+  }
+}

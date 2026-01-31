@@ -23,3 +23,6 @@ spec:
         envFrom:
         - configMapRef:
             name: {{ .Release.Name }}-config
+        - secretRef:
+            name: {{ .Release.Name }}-django-secret
+        resources: {{ toYaml .Values.resources | nindent 10 }}
