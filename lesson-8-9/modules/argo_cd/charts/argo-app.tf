@@ -21,5 +21,5 @@ spec:
 EOF
   )
 
-  depends_on = [helm_release.argo_cd]
+  depends_on = [helm_release.argo-cd]
 }

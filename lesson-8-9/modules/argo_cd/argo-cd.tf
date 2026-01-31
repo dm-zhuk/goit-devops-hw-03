@@ -15,8 +15,6 @@ resource "helm_release" "argo_cd" {
     name  = "server.service.type"
     value = "LoadBalancer"
   }
-
-  depends_on = [module.eks]
 }
 
 resource "helm_release" "argo_apps" {

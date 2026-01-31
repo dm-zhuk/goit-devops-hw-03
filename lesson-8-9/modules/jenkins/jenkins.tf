@@ -19,6 +19,4 @@ resource "helm_release" "jenkins" {
     name  = "controller.servicePort"
     value = 80
   }
-
-  depends_on = [module.eks]
 }

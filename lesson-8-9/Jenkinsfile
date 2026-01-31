@@ -72,7 +72,7 @@ spec:
       steps {
         container('git') {
           withCredentials([usernamePassword(
-            credentialsId: 'github-pat',   // ← create this in Jenkins
+            credentialsId: 'github-pat',
             usernameVariable: 'GIT_USER',
             passwordVariable: 'GIT_TOKEN'
           )]) {
