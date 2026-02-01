@@ -1,29 +1,14 @@
 terraform {
   required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-    helm = {
-      source  = "hashicorp/helm"
-      version = "~> 2.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2.0"
-    }
+    aws        = { source = "hashicorp/aws", version = "~> 5.0" }
+    helm       = { source = "hashicorp/helm", version = "~> 2.0" }
+    kubernetes = { source = "hashicorp/kubernetes", version = "~> 2.0" }
   }
   required_version = "~> 1.5"
 }
 
 provider "aws" {
   region = "eu-west-1"
-}
-
-module "s3_backend" {
-  source      = "./modules/s3-backend"
-  bucket_name = "dmjuke-goit-tf-state-2026"
-  table_name  = "terraform-locks"
 }
 
 module "vpc" {
@@ -33,6 +18,12 @@ module "vpc" {
   private_subnets    = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
   availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
   vpc_name           = "lesson-8-9-vpc"
+}
+
+module "s3_backend" {
+  source      = "./modules/s3-backend"
+  bucket_name = "dmjuke-goit-tf-state-2026"
+  table_name  = "terraform-locks"
 }
 
 module "ecr" {
@@ -46,37 +37,36 @@ module "eks" {
   cluster_name  = "eks-cluster-demo"
   subnet_ids    = module.vpc.public_subnet_ids
   instance_type = "t2.micro"
-  desired_size  = 1
-  max_size      = 2
-  min_size      = 1
 }
 
-data "aws_eks_cluster" "eks" {
-  name = module.eks.eks_cluster_name
-}
-
-data "aws_eks_cluster_auth" "eks" {
-  name = module.eks.eks_cluster_name
-}
-
+# The Handshake: This provider waits for module.eks outputs to be generated
 provider "helm" {
   kubernetes {
-    host                   = data.aws_eks_cluster.eks.endpoint
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
-    token                  = data.aws_eks_cluster_auth.eks.token
+    host                   = module.eks.eks_cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.eks_cluster_certificate_authority)
+    token                  = module.eks.eks_cluster_auth_token
   }
 }
 
 module "jenkins" {
   source       = "./modules/jenkins"
   cluster_name = module.eks.eks_cluster_name
-  region       = var.region
+  region       = "eu-west-1"
 
+  # Ensures the cluster and nodes are ready
+  depends_on = [module.eks]
+
+  # Passes the correctly configured provider
   providers = {
     helm = helm
   }
 }
 
 module "argo_cd" {
-  source = "./modules/argo_cd"
+  source     = "./modules/argo_cd"
+  depends_on = [module.eks]
+  
+  providers = {
+    helm = helm
+  }
 }

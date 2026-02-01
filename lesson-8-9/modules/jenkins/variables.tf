@@ -1,7 +1,9 @@
 variable "cluster_name" {
-  type = string
+  type        = string
+  description = "The name of the EKS cluster"
 }
 
 variable "region" {
-  type = string
+  type        = string
+  description = "AWS region"
 }

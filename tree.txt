@@ -1,0 +1,68 @@
+.
+├── README.md
+├── django-goit
+│   ├── mediafiles
+│   └── staticfiles
+├── lesson-7
+│   ├── terraform.tfstate
+│   └── terraform.tfstate.backup
+├── lesson-8-9
+│   ├── Jenkinsfile
+│   ├── backend.tf
+│   ├── charts
+│   │   └── django-app
+│   │       ├── Chart.yaml
+│   │       ├── templates
+│   │       │   ├── configmap.yaml
+│   │       │   ├── deployment.yaml
+│   │       │   ├── django-secret.yaml
+│   │       │   ├── hpa.yaml
+│   │       │   └── service.yaml
+│   │       └── values.yaml
+│   ├── main.tf
+│   ├── modules
+│   │   ├── argo_cd
+│   │   │   ├── argo-cd.tf
+│   │   │   ├── charts
+│   │   │   │   ├── Chart.yaml
+│   │   │   │   ├── argo-app.tf
+│   │   │   │   ├── templates
+│   │   │   │   │   ├── application.yaml
+│   │   │   │   │   └── repository.yaml
+│   │   │   │   └── values.yaml
+│   │   │   ├── jenkins.tf
+│   │   │   ├── outputs.tf
+│   │   │   ├── providers.tf
+│   │   │   ├── values.yaml
+│   │   │   └── variables.tf
+│   │   ├── ecr
+│   │   │   ├── ecr.tf
+│   │   │   ├── outputs.tf
+│   │   │   └── variables.tf
+│   │   ├── eks
+│   │   │   ├── aws_ebs_csi_driver.tf
+│   │   │   ├── eks.tf
+│   │   │   ├── node.tf
+│   │   │   ├── outputs.tf
+│   │   │   └── variables.tf
+│   │   ├── jenkins
+│   │   │   ├── jenkins.tf
+│   │   │   ├── outputs.tf
+│   │   │   ├── providers.tf
+│   │   │   ├── values.yaml
+│   │   │   └── variables.tf
+│   │   ├── s3-backend
+│   │   │   ├── dynamodb.tf
+│   │   │   ├── outputs.tf
+│   │   │   ├── s3.tf
+│   │   │   └── variables.tf
+│   │   └── vpc
+│   │       ├── outputs.tf
+│   │       ├── routes.tf
+│   │       ├── variables.tf
+│   │       └── vpc.tf
+│   ├── outputs.tf
+│   └── variables.tf
+└── tree.txt
+
+18 directories, 48 files

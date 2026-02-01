@@ -1,46 +1,34 @@
 resource "aws_iam_role" "eks" {
   name = "${var.cluster_name}-eks-cluster"
-
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "eks.amazonaws.com"
-      }
-    }
-  ]
-}
-POLICY
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = { Service = "eks.amazonaws.com" }
+    }]
+  })
 }
 
-# Прив'язка IAM-ролі до політики AmazonEKSClusterPolicy
 resource "aws_iam_role_policy_attachment" "eks" {
-  # ARN політики, що надає дозволи для EKS-кластера
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-
-  # IAM-роль, до якої прив'язується політика
-  role = aws_iam_role.eks.name
+  role       = aws_iam_role.eks.name
 }
 
-# Створення EKS-кластера
 resource "aws_eks_cluster" "eks" {
-  # Назва кластера
   name     = var.cluster_name
-
-  # ARN IAM-ролі, яка потрібна для керування кластером
   role_arn = aws_iam_role.eks.arn
-  
-  # Налаштування мережі (VPC)
+
   vpc_config {
-    endpoint_private_access = true   # Включає приватний доступ до API-сервера
-    endpoint_public_access  = true   # Включає публічний доступ до API-сервера
-    subnet_ids = var.subnet_ids      # Список підмереж, де буде працювати EKS
+    endpoint_private_access = true
+    endpoint_public_access  = true
+    subnet_ids              = var.subnet_ids
   }
 
-  # Залежність від IAM-політики для ролі EKS
   depends_on = [aws_iam_role_policy_attachment.eks]
+}
+
+# Generates the auth token required for Helm/Kubernetes providers
+data "aws_eks_cluster_auth" "cluster" {
+  name = aws_eks_cluster.eks.name
 }

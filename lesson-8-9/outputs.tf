@@ -1,71 +1,55 @@
-# Backend (S3 + DynamoDB for Terraform state)
+# --- Backend (S3 + DynamoDB) ---
 output "s3_bucket_name" {
-  value       = module.s3_backend.s3_bucket_name
   description = "Name of the S3 bucket for Terraform state"
+  value       = module.s3_backend.s3_bucket_name
 }
 
 output "dynamodb_table_name" {
-  value       = module.s3_backend.dynamodb_table_name
   description = "Name of the DynamoDB table for state locking"
+  value       = module.s3_backend.dynamodb_table_name
 }
 
-# VPC
+# --- VPC ---
 output "vpc_id" {
-  value       = module.vpc.vpc_id
   description = "ID of the VPC"
+  value       = module.vpc.vpc_id
 }
 
 output "public_subnet_ids" {
-  value       = module.vpc.public_subnet_ids
   description = "IDs of the public subnets"
+  value       = module.vpc.public_subnet_ids
 }
 
-output "private_subnet_ids" {
-  value       = module.vpc.private_subnet_ids
-  description = "IDs of the private subnets"
-}
-
-# EKS
-output "eks_cluster_endpoint" {
-  value       = module.eks.eks_cluster_endpoint
-  description = "EKS API endpoint for connecting to the cluster"
-}
-
+# --- EKS Cluster ---
 output "eks_cluster_name" {
+  description = "The name of the cluster created"
   value       = module.eks.eks_cluster_name
-  description = "Name of the EKS cluster"
 }
 
-output "eks_node_role_arn" {
-  value       = module.eks.eks_node_role_arn
-  description = "IAM role ARN for EKS Worker Nodes"
+output "eks_cluster_endpoint" {
+  description = "EKS API endpoint (Use this for kubectl config)"
+  value       = module.eks.eks_cluster_endpoint
 }
 
-# ECR
+# --- ECR (Crucial for CI/CD) ---
 output "ecr_repository_url" {
+  description = "URL for your Jenkins pipeline to push Docker images"
   value       = module.ecr.ecr_repository_url
-  description = "URL of the ECR repository for pushing images"
 }
 
-# Jenkins
-output "jenkins_url" {
-  value       = module.jenkins.jenkins_url
-  description = "Public URL to access Jenkins dashboard"
-}
-
+# --- Jenkins ---
 output "jenkins_namespace" {
-  value       = module.jenkins.jenkins_namespace
-  description = "Kubernetes namespace where Jenkins is deployed"
+  description = "Namespace where Jenkins resides"
+  value       = "jenkins"
 }
 
-# Argo CD
-output "argocd_url" {
-  value       = "https://${module.argo_cd.argo_cd_url}"
-  description = "Public URL to access Argo CD UI"
+# --- Argo CD ---
+output "argocd_server_status" {
+  description = "Verification note for Argo CD deployment"
+  value       = "Argo CD is managed via Helm in module.argo_cd"
 }
 
-output "argocd_admin_password" {
-  value       = "Run: kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d"
-  description = "Command to retrieve initial Argo CD admin password"
-  sensitive   = true
+output "argocd_admin_password_cmd" {
+  description = "Command to run in terminal to get your Argo password"
+  value       = "kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d"
 }
