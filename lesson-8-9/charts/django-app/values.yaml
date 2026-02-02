@@ -1,6 +1,6 @@
 image:
-  repository: "829703038395.dkr.ecr.eu-west-1.amazonaws.com/lesson-7-django-ecr"
-  tag: "latest"
+  repository: 829703038395.dkr.ecr.eu-west-1.amazonaws.com/lesson-8-9-ecr
+  tag: latest
   pullPolicy: IfNotPresent
 
 service:
