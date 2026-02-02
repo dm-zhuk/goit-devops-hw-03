@@ -34,20 +34,19 @@ spec:
     }
 
     stage('Build & Push') {
-      steps {
-        container('kaniko') {
-          // Kaniko automatically handles EKS IAM roles for ECR
-          sh """
-            /kaniko/executor \
-              --context ${WORKSPACE} \
-              --dockerfile Dockerfile \
-              --destination ${REGISTRY}/${REPO_NAME}:${IMAGE_TAG} \
-              --destination ${REGISTRY}/${REPO_NAME}:latest \
-              --cache=true
-          """
-        }
-      }
+  steps {
+    container('kaniko') {
+      sh """
+        /kaniko/executor \
+          --context ./ \
+          --dockerfile Dockerfile \
+          --destination ${REGISTRY}/${REPO_NAME}:${IMAGE_TAG} \
+          --destination ${REGISTRY}/${REPO_NAME}:latest \
+          --cache=true
+      """
     }
+  }
+}
 
     stage('Update Helm values & Push') {
       steps {
@@ -74,12 +73,6 @@ spec:
           }
         }
       }
-    }
-  }
-
-  post {
-    always {
-      cleanWs()
     }
   }
 }
