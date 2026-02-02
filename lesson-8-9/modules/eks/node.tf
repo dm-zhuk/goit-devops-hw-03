@@ -20,6 +20,11 @@ resource "aws_iam_role" "nodes" {
 POLICY
 }
 
+resource "aws_iam_role_policy_attachment" "amazon_ec2_container_registry_power_user" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
+  role       = aws_iam_role.nodes.name
+}
+
 # Прив'язка політики для EKS Worker Nodes
 resource "aws_iam_role_policy_attachment" "amazon_eks_worker_node_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
@@ -78,6 +83,7 @@ resource "aws_eks_node_group" "general" {
     aws_iam_role_policy_attachment.amazon_eks_worker_node_policy,
     aws_iam_role_policy_attachment.amazon_eks_cni_policy,
     aws_iam_role_policy_attachment.amazon_ec2_container_registry_read_only,
+    aws_iam_role_policy_attachment.amazon_ec2_container_registry_power_user,
   ]
 
   # Ігнорує зміни в desired_size, щоб уникнути конфліктів

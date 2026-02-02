@@ -2,7 +2,7 @@
 terraform {
   backend "s3" {
     bucket         = "dmjuke-goit-tf-state-2026"
-    key            = "lesson-8-9/terraform.tfstate"
+    key            = "eks/terraform.tfstate"
     region         = "eu-west-1"
     dynamodb_table = "terraform-locks"
     encrypt        = true

@@ -1,15 +1,13 @@
 resource "helm_release" "argo_cd" {
-  name       = var.name
-  namespace  = var.namespace
-  repository = "<https://argoproj.github.io/argo-helm>"
-  chart      = "argo-cd"
-  version    = var.chart_version
+  name             = "argo-cd"
+  repository       = "https://argoproj.github.io/argo-helm"
+  chart            = "argo-cd"
+  namespace        = var.namespace
+  create_namespace = true
 
   values = [
     file("${path.module}/values.yaml")
   ]
-
-  create_namespace = true
 
   set {
     name  = "server.service.type"
@@ -17,15 +15,12 @@ resource "helm_release" "argo_cd" {
   }
 }
 
+# This installs "Application" manifests (the bridge to Django app)
 resource "helm_release" "argo_apps" {
-  name       = "${var.name}-apps"
-  chart      = "${path.module}/charts"
+  name       = "argo-apps"
   namespace  = var.namespace
-  create_namespace = false
+  chart      = "${path.module}/charts"
 
-  values = [
-    file("${path.module}/values.yaml")
-  ]
+  # Wait for the controller to be ready before creating apps
   depends_on = [helm_release.argo_cd]
 }
-

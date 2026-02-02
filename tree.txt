@@ -1,11 +1,5 @@
 .
 ├── README.md
-├── django-goit
-│   ├── mediafiles
-│   └── staticfiles
-├── lesson-7
-│   ├── terraform.tfstate
-│   └── terraform.tfstate.backup
 ├── lesson-8-9
 │   ├── Jenkinsfile
 │   ├── backend.tf
@@ -32,7 +26,6 @@
 │   │   │   │   └── values.yaml
 │   │   │   ├── jenkins.tf
 │   │   │   ├── outputs.tf
-│   │   │   ├── providers.tf
 │   │   │   ├── values.yaml
 │   │   │   └── variables.tf
 │   │   ├── ecr
@@ -61,8 +54,6 @@
 │   │       ├── routes.tf
 │   │       ├── variables.tf
 │   │       └── vpc.tf
+│   ├── providers.tf
 │   ├── outputs.tf
 │   └── variables.tf
-└── tree.txt
-
-18 directories, 48 files
