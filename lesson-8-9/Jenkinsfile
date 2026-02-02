@@ -34,19 +34,19 @@ spec:
     }
 
     stage('Build & Push') {
-  steps {
-    container('kaniko') {
-      sh """
-        /kaniko/executor \
-          --context ./ \
-          --dockerfile Dockerfile \
-          --destination ${REGISTRY}/${REPO_NAME}:${IMAGE_TAG} \
-          --destination ${REGISTRY}/${REPO_NAME}:latest \
-          --cache=true
-      """
+      steps {
+        container('kaniko') {
+          sh """
+            /kaniko/executor \
+              --context ${WORKSPACE}/lesson-8-9 \
+              --dockerfile ${WORKSPACE}/lesson-8-9/Dockerfile \
+              --destination ${REGISTRY}/${REPO_NAME}:${IMAGE_TAG} \
+              --destination ${REGISTRY}/${REPO_NAME}:latest \
+              --cache=true
+          """
+        }
+      }
     }
-  }
-}
 
     stage('Update Helm values & Push') {
       steps {
