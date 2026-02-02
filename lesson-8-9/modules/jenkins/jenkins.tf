@@ -20,4 +20,9 @@ resource "helm_release" "jenkins" {
     name  = "controller.servicePort"
     value = 80
   }
+
+  set {
+  name  = "controller.image.tag"
+  value = "2.479.1"
+}
 }
