@@ -32,10 +32,11 @@ spec:
     stage('Build & Push') {
       steps {
         container('kaniko') {
-          withEnv(['AWS_REGION=eu-west-1', 'AWS_DEFAULT_REGION=eu-west-1']) {
+          withEnv(['AWS_REGION=eu-west-1', 'AWS_DEFAULT_REGION=eu-west-1', 'HOME=/kaniko']) {
             sh """
               mkdir -p /kaniko/.docker
               echo '{"credsStore":"ecr-login"}' > /kaniko/.docker/config.json
+              
               /kaniko/executor \
                 --context ${WORKSPACE}/lesson-8-9 \
                 --dockerfile ${WORKSPACE}/lesson-8-9/Dockerfile \
