@@ -35,7 +35,8 @@ spec:
               --dockerfile ${WORKSPACE}/lesson-8-9/Dockerfile \
               --destination ${REGISTRY}/${REPO_NAME}:${IMAGE_TAG} \
               --destination ${REGISTRY}/${REPO_NAME}:latest \
-              --cache=true
+              --cache=true \
+              --creds-store=ecr-login
           """
         }
       }
