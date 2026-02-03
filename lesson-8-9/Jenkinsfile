@@ -58,8 +58,10 @@ spec:
               git pull origin lesson-8-9 --rebase
               
               # Update the tag in the subfolder path
-              sed -i 's|tag: .*|tag: "${IMAGE_TAG}"|' lesson-8-9/charts/django-app/values.yaml
-              
+              echo "Current file content:" && cat lesson-8-9/charts/django-app/values.yaml
+              sed -i "s/tag: .*/tag: \"${IMAGE_TAG}\"/" lesson-8-9/charts/django-app/values.yaml
+              echo "Updated file content:" && cat lesson-8-9/charts/django-app/values.yaml
+
               git add lesson-8-9/charts/django-app/values.yaml
               git commit -m "Jenkins: update image tag to ${IMAGE_TAG} [ci skip]" || echo "No changes to commit"
               git push origin lesson-8-9
