@@ -32,19 +32,18 @@ spec:
     stage('Build & Push') {
       steps {
         container('kaniko') {
-          sh """
-            mkdir -p /kaniko/.docker
-            echo '{"credsStore":"ecr-login"}' > /kaniko/.docker/config.json
-            echo "Checking config content:"
-            cat /kaniko/.docker/config.json
-            
-            /kaniko/executor \
-              --context ${WORKSPACE}/lesson-8-9 \
-              --dockerfile ${WORKSPACE}/lesson-8-9/Dockerfile \
-              --destination ${REGISTRY}/${REPO_NAME}:${IMAGE_TAG} \
-              --destination ${REGISTRY}/${REPO_NAME}:latest \
-              --cache=true
-          """
+          withEnv(['AWS_REGION=eu-west-1', 'AWS_DEFAULT_REGION=eu-west-1']) {
+            sh """
+              mkdir -p /kaniko/.docker
+              echo '{"credsStore":"ecr-login"}' > /kaniko/.docker/config.json
+              /kaniko/executor \
+                --context ${WORKSPACE}/lesson-8-9 \
+                --dockerfile ${WORKSPACE}/lesson-8-9/Dockerfile \
+                --destination ${REGISTRY}/${REPO_NAME}:${IMAGE_TAG} \
+                --destination ${REGISTRY}/${REPO_NAME}:latest \
+                --cache=true
+            """
+          }
         }
       }
     }
