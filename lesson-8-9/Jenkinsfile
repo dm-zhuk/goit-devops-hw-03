@@ -35,6 +35,9 @@ spec:
           sh """
             mkdir -p /kaniko/.docker
             echo '{"credsStore":"ecr-login"}' > /kaniko/.docker/config.json
+            echo "Checking config content:"
+            cat /kaniko/.docker/config.json
+            
             /kaniko/executor \
               --context ${WORKSPACE}/lesson-8-9 \
               --dockerfile ${WORKSPACE}/lesson-8-9/Dockerfile \
