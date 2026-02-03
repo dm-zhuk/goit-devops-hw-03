@@ -31,7 +31,9 @@ spec:
       steps {
         container('git') {
           sh '''
-            git clone ${GIT_REPO} .
+            rm -rf repo || true   # clean if previous run left something
+            git clone ${GIT_REPO} repo
+            cd repo
             git checkout lesson-8-9
           '''
         }
@@ -42,9 +44,10 @@ spec:
       steps {
         container('kaniko') {
           sh '''
+            cd repo/lesson-8-9
             /kaniko/executor \
-              --context `pwd`/lesson-8-9 \
-              --dockerfile lesson-8-9/Dockerfile \
+              --context `pwd` \
+              --dockerfile Dockerfile \
               --destination ${REGISTRY}/${REPO_NAME}:${IMAGE_TAG} \
               --destination ${REGISTRY}/${REPO_NAME}:latest \
               --cache=true
@@ -62,18 +65,22 @@ spec:
             passwordVariable: 'GIT_TOKEN'
           )]) {
             sh """
+              cd repo
               git config user.email "jenkins@ci"
               git config user.name "Jenkins CI"
               git remote set-url origin https://${GIT_USER}:${GIT_TOKEN}@github.com/dm-zhuk/goit-devops-hw-03.git
+              git checkout lesson-8-9
               git pull origin lesson-8-9 --rebase
               
-              # Update the tag in the subfolder path
-              echo "Current file content:" && cat lesson-8-9/charts/django-app/values.yaml
-              sed -i "s|tag: \".*\"|tag: \"${IMAGE_TAG}\"|" lesson-8-9/charts/django-app/values.yaml
-              echo "Updated file content:" && cat lesson-8-9/charts/django-app/values.yaml
+              # Update tag
+              echo "Current values.yaml:"
+              cat lesson-8-9/charts/django-app/values.yaml
+              sed -i 's/tag: \".*\"/tag: \"${IMAGE_TAG}\"/' lesson-8-9/charts/django-app/values.yaml
+              echo "Updated values.yaml:"
+              cat lesson-8-9/charts/django-app/values.yaml
 
               git add lesson-8-9/charts/django-app/values.yaml
-              git commit -m "Jenkins: update image tag to ${IMAGE_TAG} [ci skip]" || echo "No changes to commit"
+              git commit -m "Jenkins build ${BUILD_NUMBER}: update image tag to ${IMAGE_TAG} [ci skip]" || echo "No changes to commit"
               git push origin lesson-8-9
             """
           }
