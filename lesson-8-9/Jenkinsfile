@@ -30,15 +30,14 @@ spec:
     stage('Build & Push') {
       steps {
         container('kaniko') {
-          sh """
+          sh '''
             /kaniko/executor \
-              --context ${WORKSPACE} \
-              --context-sub-path lesson-8-9 \
-              --dockerfile lesson-8-9/Dockerfile \
-              --destination ${REGISTRY}/${REPO_NAME}:${IMAGE_TAG} \
-              --destination ${REGISTRY}/${REPO_NAME}:latest \
+              --context `pwd` \
+              --dockerfile Dockerfile \
+              --destination ${ECR_REPO}:${IMAGE_TAG} \
+              --destination ${ECR_REPO}:latest \
               --cache=true
-          """
+          '''
         }
       }
     }

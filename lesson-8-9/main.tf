@@ -80,12 +80,12 @@ module "jenkins" {
 }
 
 module "argo_cd" {
-  source     = "./modules/argo_cd"
-  namespace  = "argocd"
-  
+  source    = "./modules/argo_cd"
+  namespace = "argocd"
+
   # Critical: Don't try to install Argo until EKS is active
   depends_on = [module.eks]
-  
+
   providers = {
     helm       = helm
     kubernetes = kubernetes
