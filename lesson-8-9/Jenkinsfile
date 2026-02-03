@@ -11,13 +11,20 @@ spec:
     imagePullPolicy: Always
     command: ["sleep"]
     args: ["99d"]
-    env:
-    - name: DOCKER_CONFIG
-      value: /workspace/.docker
+    volumeMounts:
+    - name: registry-creds
+      mountPath: /kaniko/.docker
   - name: git
     image: alpine/git
     command: ["sleep"]
     args: ["99d"]
+  volumes:
+  - name: registry-creds
+    secret:
+      secretName: regcred
+      items:
+      - key: .dockerconfigjson
+        path: config.json
 '''
     }
   }
@@ -32,19 +39,7 @@ spec:
     stage('Build & Push') {
       steps {
         container('kaniko') {
-          withEnv(['AWS_REGION=eu-west-1', 'AWS_DEFAULT_REGION=eu-west-1', 'HOME=/kaniko']) {
-            sh """
-              mkdir -p /kaniko/.docker
-              echo '{"credsStore":"ecr-login"}' > /kaniko/.docker/config.json
-              
-              /kaniko/executor \
-                --context ${WORKSPACE}/lesson-8-9 \
-                --dockerfile ${WORKSPACE}/lesson-8-9/Dockerfile \
-                --destination ${REGISTRY}/${REPO_NAME}:${IMAGE_TAG} \
-                --destination ${REGISTRY}/${REPO_NAME}:latest \
-                --cache=true
-            """
-          }
+          sh "/kaniko/executor --context ${WORKSPACE}/lesson-8-9 --dockerfile ${WORKSPACE}/lesson-8-9/Dockerfile --destination ${REGISTRY}/${REPO_NAME}:${IMAGE_TAG} --destination ${REGISTRY}/${REPO_NAME}:latest --cache=true"
         }
       }
     }
