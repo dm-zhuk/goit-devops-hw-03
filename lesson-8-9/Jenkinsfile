@@ -11,6 +11,9 @@ spec:
     imagePullPolicy: Always
     command: ["sleep"]
     args: ["99d"]
+    env:
+    - name: DOCKER_CONFIG
+      value: /workspace/.docker
   - name: git
     image: alpine/git
     command: ["sleep"]
@@ -30,13 +33,14 @@ spec:
       steps {
         container('kaniko') {
           sh """
+            mkdir -p /workspace/.docker
+            echo '{"credsStore":"ecr-login"}' > /workspace/.docker/config.json
             /kaniko/executor \
               --context ${WORKSPACE}/lesson-8-9 \
               --dockerfile ${WORKSPACE}/lesson-8-9/Dockerfile \
               --destination ${REGISTRY}/${REPO_NAME}:${IMAGE_TAG} \
               --destination ${REGISTRY}/${REPO_NAME}:latest \
-              --cache=true \
-              --creds-store=ecr-login
+              --cache=true
           """
         }
       }
@@ -49,7 +53,7 @@ spec:
             sh """
               git config --global user.email "jenkins@ci"
               git config --global user.name "jenkins"
-              git clone https://$U:$P@github.com/dm-zhuk/goit-devops-hw-03.git temp_repo
+              git clone https://\$U:\$P@github.com/dm-zhuk/goit-devops-hw-03.git temp_repo
               cd temp_repo
               git checkout lesson-8-9
               sed -i "s|tag: .*|tag: '${IMAGE_TAG}'|" lesson-8-9/charts/django-app/values.yaml
