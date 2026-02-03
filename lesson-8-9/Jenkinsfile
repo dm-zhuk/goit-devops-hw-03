@@ -6,22 +6,22 @@ pipeline {
   kind: Pod
   spec:
     containers:
-    - name: kaniko
-      image: gcr.io/kaniko-project/executor:v1.16.0-debug
-      imagePullPolicy: Always
-      command: ["sleep"]
-      args: ["99d"]
-      volumeMounts:
-      - name: docker-config
-        mountPath: /kaniko/.docker
-    - name: git
-      image: alpine/git
-      command: ["sleep"]
-      args: ["99d"]
-    volumes:
-    - name: docker-config
-      secret:
-        secretName: regcred
+      - name: kaniko
+    image: gcr.io/kaniko-project/executor:v1.16.0-debug
+    imagePullPolicy: Always
+    command: ["sleep"]
+    args: ["99d"]
+    env:
+    - name: AWS_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: aws-creds
+          key: aws_access_key_id
+    - name: AWS_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: aws-creds
+          key: aws_secret_access_key
   '''
     }
   }
