@@ -39,7 +39,7 @@ spec:
           sh """
             /kaniko/executor \
               --context ${WORKSPACE}/lesson-8-9 \
-              --dockerfile ${WORKSPACE}/lesson-8-9/Dockerfile \
+              --dockerfile Dockerfile \
               --destination ${REGISTRY}/${REPO_NAME}:${IMAGE_TAG} \
               --destination ${REGISTRY}/${REPO_NAME}:latest \
               --cache=true
@@ -56,20 +56,19 @@ spec:
             usernameVariable: 'GIT_USER',
             passwordVariable: 'GIT_TOKEN'
           )]) {
-            sh '''
+            sh """
               git config user.email "jenkins@ci"
               git config user.name "Jenkins CI"
-              # Re-auth the origin to allow pushing
               git remote set-url origin https://${GIT_USER}:${GIT_TOKEN}@github.com/dm-zhuk/goit-devops-hw-03.git
               git pull origin lesson-8-9 --rebase
               
-              # Update the tag in your chart
-              sed -i "s|tag: .*|tag: \\"${IMAGE_TAG}\\"|" charts/django-app/values.yaml
+              # FIX: Point to the correct subfolder path
+              sed -i 's|tag: .*|tag: "${IMAGE_TAG}"|' lesson-8-9/charts/django-app/values.yaml
               
-              git add charts/django-app/values.yaml
+              git add lesson-8-9/charts/django-app/values.yaml
               git commit -m "Jenkins: update image tag to ${IMAGE_TAG} [ci skip]" || echo "No changes to commit"
               git push origin lesson-8-9
-            '''
+            """
           }
         }
       }
