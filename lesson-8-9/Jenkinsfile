@@ -30,12 +30,11 @@ spec:
     stage('Build & Push') {
       steps {
         container('kaniko') {
-          // We move into the folder and use `pwd` to tell Kaniko exactly where we are
           sh """
             cd lesson-8-9 && \
             /kaniko/executor \
-              --context `pwd` \
-              --dockerfile `pwd`/Dockerfile \
+              --context . \
+              --dockerfile Dockerfile \
               --destination ${REGISTRY}/${REPO_NAME}:${IMAGE_TAG} \
               --destination ${REGISTRY}/${REPO_NAME}:latest \
               --cache=true
