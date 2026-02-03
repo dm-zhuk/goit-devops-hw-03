@@ -1,10 +1,7 @@
-/Users/macbook/Documents/GitHub/19_DevOps_CI_CD/HW/goit-devops-hw-03/lesson-8-9/
-
+/Users/macbook/Documents/GitHub/19_DevOps_CI_CD/HW/goit-devops-hw-03/lesson-8-9
+├── Dockerfile
 ├── Jenkinsfile
-├── main.tf
 ├── backend.tf
-├── outputs.tf
-└── variables.tf
 ├── charts
 │   └── django-app
 │       ├── Chart.yaml
@@ -15,6 +12,7 @@
 │       │   ├── hpa.yaml
 │       │   └── service.yaml
 │       └── values.yaml
+├── main.tf
 ├── modules
 │   ├── argo_cd
 │   │   ├── argo-cd.tf
@@ -54,3 +52,9 @@
 │       ├── routes.tf
 │       ├── variables.tf
 │       └── vpc.tf
+├── outputs.tf
+├── providers.tf.bak
+├── terraform.tfstate
+├── terraform.tfstate.backup
+├── tfplan
+└── variables.tf
