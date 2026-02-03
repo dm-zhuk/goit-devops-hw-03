@@ -10,11 +10,11 @@ spec:
     image: gcr.io/kaniko-project/executor:v1.16.0-debug
     imagePullPolicy: Always
     command: ["sleep"]
-    args: ["infinity"]
+    args: ["99d"]
   - name: git
     image: alpine/git
     command: ["sleep"]
-    args: ["infinity"]
+    args: ["99d"]
 '''
     }
   }
@@ -27,19 +27,15 @@ spec:
   }
 
   stages {
-    stage('Checkout') {
-      steps {
-        checkout scm // Use Jenkins native checkout for the current repo/branch
-      }
-    }
-
     stage('Build & Push') {
       steps {
         container('kaniko') {
+          // We move into the folder and use `pwd` to tell Kaniko exactly where we are
           sh """
+            cd lesson-8-9 && \
             /kaniko/executor \
-              --context ${WORKSPACE}/lesson-8-9 \
-              --dockerfile Dockerfile \
+              --context `pwd` \
+              --dockerfile `pwd`/Dockerfile \
               --destination ${REGISTRY}/${REPO_NAME}:${IMAGE_TAG} \
               --destination ${REGISTRY}/${REPO_NAME}:latest \
               --cache=true
@@ -62,7 +58,7 @@ spec:
               git remote set-url origin https://${GIT_USER}:${GIT_TOKEN}@github.com/dm-zhuk/goit-devops-hw-03.git
               git pull origin lesson-8-9 --rebase
               
-              # FIX: Point to the correct subfolder path
+              # Update the tag in the subfolder path
               sed -i 's|tag: .*|tag: "${IMAGE_TAG}"|' lesson-8-9/charts/django-app/values.yaml
               
               git add lesson-8-9/charts/django-app/values.yaml
