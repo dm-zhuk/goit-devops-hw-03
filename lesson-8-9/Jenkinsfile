@@ -31,10 +31,10 @@ spec:
       steps {
         container('kaniko') {
           sh """
-            cd lesson-8-9 && \
             /kaniko/executor \
-              --context . \
-              --dockerfile Dockerfile \
+              --context ${WORKSPACE} \
+              --context-sub-path lesson-8-9 \
+              --dockerfile lesson-8-9/Dockerfile \
               --destination ${REGISTRY}/${REPO_NAME}:${IMAGE_TAG} \
               --destination ${REGISTRY}/${REPO_NAME}:latest \
               --cache=true
