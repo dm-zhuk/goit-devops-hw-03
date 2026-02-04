@@ -1,9 +1,10 @@
-# Stores env vars from values.yaml (transferred from hw lesson-4).
-
+# Stores env vars from values.yaml (non-sensitive data)
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-config
+  name: {{ include "django-app.fullname" . }}-config
+  labels:
+    {{- include "django-app.labels" . | nindent 4 }}
 data:
   {{- range $key, $value := .Values.env }}
   {{ $key }}: {{ $value | quote }}

@@ -19,8 +19,8 @@ env:
   ALLOWED_HOSTS: "a2eb0bbdffc04416ca9cd37341ae0e85-1536671044.eu-west-1.elb.amazonaws.com,localhost,127.0.0.1"
 
 secretEnv:
-  SECRET_KEY: "7-msDOwMQmZhI9hncT9pRdpUoDrgu4dhhjFc7CvNkGdU1-i5QYYF_NgsThRiI9-_0yA"
-  DATABASE_URL: "postgres://admin:pass7890@my-postgres-postgresql:5432/django_db"
+  SECRET_KEY: ""
+  DATABASE_URL: ""
 
 resources:
   requests:

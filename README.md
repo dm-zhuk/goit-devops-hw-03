@@ -1,63 +1,86 @@
 # Django App CI/CD: Terraform, Jenkins & Argo CD
 
-This project demonstrates a complete GitOps lifecycle for a Django web application using Infrastructure as Code (Terraform), a CI/CD pipeline (Jenkins + Kaniko), and automated deployment (Argo CD) on AWS EKS.
+This project demonstrates a fully automated **GitOps** lifecycle for a Django application.
+It leverages **Infrastructure as Code (Terraform)**, **Continuous Integration (Jenkins + Kaniko)**, and **Continuous Deployment (Argo CD)** on a managed **AWS EKS** cluster.
 
----
+## Architecture & CI/CD Flow
 
-## 1. How to Apply Terraform
-The infrastructure is managed as code and deployed in the `eu-west-1` region.
+```mermaid
+graph LR
+    subgraph GitHub ["GitHub (lesson-8-9)"]
+        A[Code Push]
+    end
 
-* **Step 1: Initialize Terraform**
-  ```bash
-  terraform init
+    subgraph CI_Pipeline ["Jenkins (EKS)"]
+        B[Trigger Job] --> C[Build w/ Kaniko]
+        C --> D[Push to ECR]
+        D --> E[Update Git Image Tag]
+    end
 
-* **Step 2: Create Resources Deploy the VPC, EKS Cluster, and ECR Registry**
+    subgraph CD_Sync ["Argo CD (GitOps)"]
+        F[Detect Git Change] --> G[Sync Helm Chart]
+        G --> H[Deploy to EKS]
+    end
 
-```bash
-terraform apply --auto-approve
-Result: A managed Kubernetes cluster and a private ECR registry are created at 829703038395.dkr.ecr.eu-west-1.amazonaws.com/lesson-8-9-ecr.
+    subgraph AWS_Cloud ["AWS Infrastructure"]
+        D -.-> I[(Amazon ECR)]
+        H --> J[Django Pods]
+        H --> K[(PostgreSQL)]
+    end
 
-## 2. How to Verify Jenkins Job
-Jenkins automates the building of the Docker image and the updating of the deployment version in Git.
+    A --> B
+    E -.-> F
+```
 
-Build & Push: The pipeline uses a Kaniko agent to build the Docker image and push it to AWS ECR. Authentication is handled via a Kubernetes Secret regcred containing a valid AWS token.
+## Key Features & Security
 
-Update Git: Upon a successful push, Jenkins automatically edits lesson-8-9/charts/django-app/values.yaml to update the tag (e.g., to version 45).
+ECR Security: Repository policy is restricted to the specific AWS Account ID via IAM Principal (no public access).
 
-Verification:
+Secret Management: Sensitive data (SECRET_KEY, DATABASE_URL) is managed via environment injection and excluded from Git via .gitignore.
 
-Jenkins UI: The pipeline job should show a "Success" status (green).
+Multi-Stage Dockerfile: Optimized Django image running as a non-root user for enhanced security.
 
-GitHub: A new automated commit titled update tag 45 [ci skip] should appear in the dm-zhuk/goit-devops-hw-03 repository.
+Database Persistence: Integrated PostgreSQL as a Helm dependency with Persistent Volume storage.
 
-## 3. How to See Results in Argo CD
+Jenkins Stability: PersistentVolume (PV) enabled to ensure job configurations survive restarts.
+
+## 1. Infrastructure Deployment (Terraform)
+
+The infrastructure is deployed in the eu-west-1 region.
+
+Initialize & Apply:
+
+>> terraform init
+>> terraform apply --auto-approve
+Result: Creates a VPC, EKS Cluster, and a private ECR registry at 829703038395.dkr.ecr.eu-west-1.amazonaws.com/lesson-8-9-ecr.
+
+## 2. Continuous Integration (Jenkins)
+
+Jenkins handles the build process inside the cluster.
+
+Build & Push: Uses a Kaniko agent (rootless) to build the Docker image and push it to AWS ECR. Authentication is handled via a Kubernetes Secret regcred.
+
+Git Update: Upon a successful push, Jenkins commits a change to lesson-8-9/charts/django-app/values.yaml updating the tag to match the build number (tag: '45').
+
+Verification: Check the Jenkins UI for a "Success" status and verify the automated commit in GitHub.
+
+## 3. Continuous Deployment (Argo CD)
+
 Argo CD implements GitOps by synchronizing the cluster state with the Git configuration.
 
-Accessing the UI:
+Access the Dashboard:
 
-* **Retrieve the LoadBalancer URL:**
+>> kubectl get svc -n argocd argo-cd-argocd-server
+URL: https://a04ef8ea87ecf4604a31e5fc90291149-530623759.eu-west-1.elb.amazonaws.com
 
-```bash
+Sync Check: Ensure the django-app shows a Synced status. Clicking the application card will display the resource tree (Deployment, Service, Pods).
 
-kubectl get svc -n argocd argo-cd-argocd-server
+Verify Pods:
 
-* **URL: https://a04ef8ea87ecf4604a31e5fc90291149-530623759.eu-west-1.elb.amazonaws.com**
-
-Verification in Dashboard:
-
-Log in and locate the django-app application.
-
-You will see a Synced status with a green checkmark.
-
-Clicking the application card will display the resource tree (Deployment, Service, Pods).
-
-Confirming Deployment: Verify that the running pods are using the latest image tag pushed by Jenkins:
-
-```bash
-kubectl describe pod -n default | grep Image:
-Result: The image tag should match the Jenkins build number (e.g., :45).
+>> kubectl describe pod | grep Image:
+Result: Image should match the latest Jenkins build (e.g., :45).
 
 ## 4. Resource Cleanup
+To avoid unnecessary AWS costs, destroy the infrastructure when finished:
 
-```bash
-terraform destroy --auto-approve
+>> terraform destroy --auto-approve

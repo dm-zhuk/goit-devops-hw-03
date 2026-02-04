@@ -1,5 +1,39 @@
+# --- OS Files ---
+.DS_Store
+Thumbs.db
+
+# --- Environment & Secrets ---
+.env
+.env.prod
+.venv/
+env/
+venv/
+ENV/
+*.txt
+*.json
+!Chart.yaml
+!package.json
+
+# --- Django ---
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# --- Django Static/Media (Handled by Docker Volumes) ---
+staticfiles/
+mediafiles/
+
+# --- Terraform ---
 .terraform/
 *.tfstate
 *.tfstate.backup
-.terraform.lock.hcl
-.DS_Store
+*.tfvars
+!terraform.tfvars.example
+tfplan
+
+# --- Docker ---
+.docker/

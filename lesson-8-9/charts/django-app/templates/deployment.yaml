@@ -21,6 +21,10 @@ spec:
         ports:
         - containerPort: 8000  # Django default
         envFrom:
+          - secretRef:
+              name: {{ include "django-app.fullname" . }}-secret
+          - configMapRef:
+              name: {{ include "django-app.fullname" . }}-config
         - configMapRef:
             name: {{ .Release.Name }}-config
         - secretRef:
