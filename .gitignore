@@ -6,13 +6,21 @@ Thumbs.db
 .env
 .env.prod
 .venv/
-env/
-venv/
-ENV/
-*.txt
-*.json
+ecr-password.txt
+config.json
+
+# --- Allow necessary chart files ---
 !Chart.yaml
-!package.json
+!values.schema.json
+!NOTES.txt
+
+# --- Helm ---
+!lesson-8-9/charts/django-app/charts/postgresql/
+
+# Explicitly allow sub-chart metadata that general rules might block
+!*/postgresql/*.json
+!*/postgresql/*.txt
+!*/postgresql/templates/
 
 # --- Django ---
 *.log
