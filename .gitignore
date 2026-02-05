@@ -1,5 +1,53 @@
+# --- OS Files ---
+.DS_Store
+Thumbs.db
+
+# --- Environment & Secrets ---
+.env
+.env.prod
+.venv/
+ecr-password.txt
+config.json
+# Sensitive keys and passwords
+ecr-password.txt
+config.json
+
+# --- Allow necessary chart files ---
+!Chart.yaml
+!values.schema.json
+!NOTES.txt
+
+# --- Helm ---
+!lesson-8-9/charts/django-app/charts/postgresql/
+
+# Explicitly allow sub-chart metadata that general rules might block
+!*/postgresql/*.json
+!*/postgresql/*.txt
+!*/postgresql/templates/
+
+# --- Django ---
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# --- Django Static/Media (Handled by Docker Volumes) ---
+staticfiles/
+mediafiles/
+
+# --- Terraform ---
 .terraform/
 *.tfstate
 *.tfstate.backup
+*.tfvars
+!terraform.tfvars.example
+tfplan
+*.tfplan
+*.bak
 .terraform.lock.hcl
-.DS_Store
+
+# --- Docker ---
+.docker/
