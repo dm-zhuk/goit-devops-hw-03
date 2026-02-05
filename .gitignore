@@ -8,6 +8,9 @@ Thumbs.db
 .venv/
 ecr-password.txt
 config.json
+# Sensitive keys and passwords
+ecr-password.txt
+config.json
 
 # --- Allow necessary chart files ---
 !Chart.yaml
@@ -42,6 +45,9 @@ mediafiles/
 *.tfvars
 !terraform.tfvars.example
 tfplan
+*.tfplan
+*.bak
+.terraform.lock.hcl
 
 # --- Docker ---
 .docker/
