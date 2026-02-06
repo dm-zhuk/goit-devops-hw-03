@@ -1,7 +1,7 @@
 resource "aws_rds_cluster" "this" {
   count                  = var.use_aurora ? 1 : 0
   cluster_identifier     = "${var.project_name}-aurora-cluster"
-  engine                 = var.engine # e.g., aurora-postgresql
+  engine                 = var.engine
   database_name          = var.db_name
   master_username        = var.db_username
   master_password        = var.db_password

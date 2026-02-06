@@ -41,7 +41,7 @@ variable "engine_version" {
 }
 
 variable "instance_class" {
-  description = "The instance type (e.g., db.t3.micro for RDS, db.t3.medium for Aurora)"
+  description = "The instance type (e.g., db.t3.micro for RDS, db.t3.small for Aurora)"
   type        = string
   default     = "db.t3.micro"
 }
