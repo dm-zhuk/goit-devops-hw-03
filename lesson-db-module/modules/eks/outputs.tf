@@ -17,3 +17,7 @@ output "eks_cluster_name" {
   description = "The name of the EKS cluster."
   value       = aws_eks_cluster.eks.name
 }
+
+output "node_security_group_id" {
+  value = aws_security_group.node_sg.id
+}
