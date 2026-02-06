@@ -7,11 +7,12 @@ terraform {
   }
   required_version = "~> 1.5"
 
+  # Uncommentable after first 'apply' to move state to S3
   # backend "s3" {} 
 }
 
 provider "aws" {
-  region = "eu-west-1"
+  region = var.aws_region
 }
 
 # Infrastructure Modules (The Foundation)
@@ -21,8 +22,8 @@ module "vpc" {
   vpc_cidr_block     = "10.0.0.0/16"
   public_subnets     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
   private_subnets    = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
-  availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
-  vpc_name           = "lesson-8-9-vpc"
+  availability_zones = ["${var.aws_region}a", "${var.aws_region}b", "${var.aws_region}c"]
+  vpc_name           = "${var.name}-vpc"
 }
 
 module "s3_backend" {
@@ -33,14 +34,44 @@ module "s3_backend" {
 
 module "ecr" {
   source       = "./modules/ecr"
-  ecr_name     = "lesson-8-9-ecr"
+  ecr_name     = "${var.name}-ecr"
   scan_on_push = true
+}
+
+module "rds" {
+  source = "./modules/rds"
+
+  name           = var.name
+  use_aurora     = var.use_aurora
+  instance_class = var.instance_class
+  
+  # RDS/Aurora Logic
+  engine                 = var.engine
+  engine_version         = var.engine_version
+  engine_cluster         = var.engine_cluster
+  engine_version_cluster = var.engine_version_cluster
+  
+  # Credentials from tfvars
+  db_name  = var.db_name
+  username = var.username
+  password = var.password
+
+  # Networking
+  vpc_id             = module.vpc.vpc_id
+  subnet_private_ids = module.vpc.private_subnets
+  subnet_public_ids  = module.vpc.public_subnets
+  
+  # Production settings from your book
+  multi_az                = var.multi_az
+  backup_retention_period = var.backup_retention_period
+  parameters              = var.parameters
+  tags                    = var.tags
 }
 
 module "eks" {
   source        = "./modules/eks"
-  cluster_name  = "eks-cluster-demo"
-  subnet_ids    = module.vpc.public_subnet_ids
+  cluster_name  = "${var.name}-cluster"
+  subnet_ids    = module.vpc.public_subnets
   instance_type = "t3.small"
 }
 
@@ -64,12 +95,12 @@ provider "kubernetes" {
 }
 
 # Application Modules (The Software)
+
 module "jenkins" {
   source       = "./modules/jenkins"
   cluster_name = module.eks.eks_cluster_name
-  region       = "eu-west-1"
+  region       = var.aws_region
 
-  # Critical: Don't try to install Jenkins until EKS is active
   depends_on = [module.eks]
 
   providers = {
@@ -82,7 +113,6 @@ module "argo_cd" {
   source    = "./modules/argo_cd"
   namespace = "argocd"
 
-  # Critical: Don't try to install Argo until EKS is active
   depends_on = [module.eks]
 
   providers = {
@@ -90,38 +120,3 @@ module "argo_cd" {
     kubernetes = kubernetes
   }
 }
-
-module "rds" {
-  source = "./modules/rds"
-
-  name                       = "myapp-db"
-  use_aurora                 = false
-  aurora_instance_count      = 2
-
-  # --- RDS-only ---
-  engine                     = "postgres"
-  engine_version             = "17.2"
-  parameter_group_family_rds = "postgres17"
-
-  # Common
-  instance_class             = "db.t3.micro"
-  allocated_storage          = 20
-  db_name                    = "myapp"              # to .env
-  username                   = "postgres"           # to .env
-  password                   = "admin123AWS23"      # to .env
-  subnet_private_ids         = module.vpc.private_subnets
-  subnet_public_ids          = module.vpc.public_subnets
-  publicly_accessible        = true
-  vpc_id                     = module.vpc.vpc_id
-  multi_az                   = true
-  backup_retention_period    = 7
-  parameters = {
-    max_connections              = "200"
-    log_min_duration_statement   = "500"
-  }
-
-  tags = {
-    Environment = "dev"
-    Project     = "myapp"
-  }
-} 
