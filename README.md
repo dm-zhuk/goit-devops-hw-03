@@ -92,4 +92,4 @@ Cost Management: Terminated all resources immediately following verification to 
 
 ### Kubernetes Cluster Readiness
 Worker nodes and Argo CD pods in a healthy state.
-![Cluster Status](./img/nodes.png)
+![Cluster Status](/Users/macbook/Documents/GitHub/19_DevOps_CI_CD/HW/goit-devops-hw-03/lesson-db-module/img/nodes.png)
