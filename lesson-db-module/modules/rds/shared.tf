@@ -5,6 +5,18 @@ resource "aws_db_subnet_group" "this" {
   tags = { Name = "${var.project_name}-db-subnet-group" }
 }
 
+resource "aws_db_parameter_group" "this" {
+  count  = var.use_aurora ? 0 : 1
+  name   = "${var.project_name}-pg"
+  family = "postgres17"
+
+  parameter {
+    name         = "max_connections"
+    value        = "200"
+    apply_method = "pending-reboot" # Change this from 'immediate'
+  }
+}
+
 resource "aws_security_group" "db_sg" {
   name        = "${var.project_name}-db-sg"
   vpc_id      = var.vpc_id

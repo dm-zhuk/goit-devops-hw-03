@@ -5,6 +5,8 @@ resource "helm_release" "jenkins" {
   chart            = "jenkins"
   version          = "5.0.16"
   create_namespace = true
+  timeout          = 900
+  wait             = true
 
   # Pulls custom config for Kaniko/Git agents
   values = [
