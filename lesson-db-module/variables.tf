@@ -1,3 +1,8 @@
+variable "project_name" {
+  type    = string
+  default = "goit-devops-hw03"
+}
+
 # Cloud Provider Settings
 variable "aws_region" {
   description = "AWS region for deployment"

@@ -1,5 +1,5 @@
 output "eks_cluster_endpoint" {
-  description = "The endpoint for your EKS Kubernetes API."
+  description = "The endpoint for EKS Kubernetes API."
   value       = aws_eks_cluster.eks.endpoint
 }
 

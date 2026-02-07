@@ -20,6 +20,23 @@ resource "aws_iam_role" "nodes" {
 POLICY
 }
 
+resource "aws_security_group" "node_sg" {
+  name        = "${var.cluster_name}-node-sg"
+  description = "Security group for all nodes in the cluster"
+  vpc_id      = var.vpc_id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.cluster_name}-node-sg"
+  }
+}
+
 resource "aws_iam_role_policy_attachment" "amazon_ec2_container_registry_power_user" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
   role       = aws_iam_role.nodes.name

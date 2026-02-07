@@ -7,13 +7,13 @@ output "vpc_id" {
 # List of public subnet IDs
 output "public_subnet_ids" {
   description = "List of IDs of the public subnets"
-  value       = [for subnet in aws_subnet.public : subnet.id]
+  value = aws_subnet.public[*].id
 }
 
 # List of private subnet IDs
-output "private_subnet_ids" {
+output "subnet_private_ids" {
   description = "List of IDs of the private subnets"
-  value       = [for subnet in aws_subnet.private : subnet.id]
+  value = aws_subnet.private[*].id
 }
 
 # ID of the Internet Gateway

@@ -8,7 +8,7 @@ data "kubernetes_service" "jenkins" {
 }
 
 output "jenkins_url" {
-  value       = "http://${data.kubernetes_service.jenkins.status.0.load_balancer.0.ingress.0.hostname}"
+  value = try("http://${data.kubernetes_service.jenkins.status.0.load_balancer.0.ingress.0.hostname}", "Pending... (wait for LoadBalancer)")
   description = "Public URL to access Jenkins dashboard"
 }
 

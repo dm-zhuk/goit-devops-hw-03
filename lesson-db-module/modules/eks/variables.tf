@@ -1,6 +1,6 @@
 variable "region" {
   description = "AWS region for deployment"
-  default     = "us-east-1"
+  default     = "eu-west-1"
 }
 
 variable "cluster_name" {
@@ -36,4 +36,15 @@ variable "max_size" {
 variable "min_size" {
   description = "Minimum number of worker nodes"
   default     = 1
+}
+
+variable "vpc_id" {
+  description = "The ID of the VPC where the security group will be created"
+  type        = string
+}
+
+variable "ssh_key_name" {
+  description = "Optional SSH key for node access"
+  type        = string
+  default     = null
 }

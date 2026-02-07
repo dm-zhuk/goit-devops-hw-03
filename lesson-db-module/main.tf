@@ -2,8 +2,8 @@
 terraform {
   required_providers {
     aws        = { source = "hashicorp/aws", version = "~> 5.0" }
-    helm       = { source = "hashicorp/helm", version = "~> 2.0" }
-    kubernetes = { source = "hashicorp/kubernetes", version = "~> 2.0" }
+    helm       = { source = "hashicorp/helm", version = "~> 2.0.0" }
+    kubernetes = { source = "hashicorp/kubernetes", version = "~> 2.0.0" }
   }
   required_version = "~> 1.5"
 
@@ -59,11 +59,11 @@ module "rds" {
   password = var.password
 
   # Networking & Security
-  vpc_id             = module.vpc.vpc_id
-  subnet_private_ids = module.vpc.private_subnets
-  subnet_public_ids  = module.vpc.public_subnets
-  eks_node_sg_id     = module.eks.node_security_group_id
-
+  vpc_id              = module.vpc.vpc_id
+  subnet_private_ids  = module.vpc.subnet_private_ids
+  subnet_public_ids   = module.vpc.public_subnet_ids
+  eks_node_sg_id      = module.eks.node_security_group_id
+  
   # Production Settings
   multi_az                = var.multi_az
   backup_retention_period = var.backup_retention_period
@@ -74,7 +74,8 @@ module "rds" {
 module "eks" {
   source        = "./modules/eks"
   cluster_name  = "${var.name}-cluster"
-  subnet_ids    = module.vpc.public_subnets
+  vpc_id        = module.vpc.vpc_id
+  subnet_ids    = module.vpc.public_subnet_ids
   instance_type = "t3.small"
 }
 

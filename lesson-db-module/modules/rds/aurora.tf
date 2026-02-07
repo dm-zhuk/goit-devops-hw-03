@@ -3,8 +3,8 @@ resource "aws_rds_cluster" "this" {
   cluster_identifier     = "${var.project_name}-aurora-cluster"
   engine                 = var.engine
   database_name          = var.db_name
-  master_username        = var.db_username
-  master_password        = var.db_password
+  master_username        = var.username
+  master_password        = var.password
   db_subnet_group_name   = aws_db_subnet_group.this.name
   vpc_security_group_ids = [aws_security_group.db_sg.id]
   skip_final_snapshot    = true

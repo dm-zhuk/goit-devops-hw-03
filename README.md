@@ -27,7 +27,7 @@ instance_class = "db.t3.micro"
 
 ## Configuration & Deployment
 1. Variables (**terraform.tfvars**)
-Create this file locally (ignored by Git) to store your environment specifics:
+Create this file locally (ignored by Git) to store environment specifics:
 VariableDescriptionExamplenameBase name for resourcesgoit-devops-hw03use_auroraEnable Aurora ClustertrueusernameMaster DB userpostgrespasswordMaster DB pass***********
 
 2. Deployment Sequence
