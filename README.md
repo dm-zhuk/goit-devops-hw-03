@@ -13,5 +13,7 @@ This repository serves as a hub for my DevOps learning journey. To keep the work
 
 - **[Lesson 8-9: Kubernetes & Helm](https://github.com/dm-zhuk/goit-devops-hw-03/tree/lesson-8-9)** - CI/CD - Jenkins + Helm + Terraform + Argo CD.
 
+- **[Lesson-db-module: Aurora & RDS](https://github.com/dm-zhuk/goit-devops-hw-03/tree/lesson-db-module)** - Django App CI/CD: Multi-Engine Database Module.
+
 ---
 *Main branch contains only this navigation guide. Switch branches to view specific project code.*
