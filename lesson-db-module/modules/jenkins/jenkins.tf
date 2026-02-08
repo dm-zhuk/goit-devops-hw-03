@@ -24,7 +24,7 @@ resource "helm_release" "jenkins" {
   }
 
   set {
-  name  = "controller.image.tag"
-  value = "2.479.1"
-}
+    name  = "controller.image.tag"
+    value = "2.479.1"
+  }
 }

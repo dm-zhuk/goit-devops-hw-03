@@ -1,6 +1,7 @@
 variable "project_name" {
-  type    = string
-  default = "goit-devops-hw03"
+  description = "Project name used for resource naming and tagging"
+  type        = string
+  default     = "goit-devops-hw03"
 }
 
 # Cloud Provider Settings
@@ -17,7 +18,7 @@ variable "name" {
 }
 
 variable "tags" {
-  description = "Common tags for all resources"
+  description = "Common tags to be applied to all resources"
   type        = map(string)
   default     = {}
 }
@@ -30,7 +31,7 @@ variable "use_aurora" {
 
 # Database Engine & Versioning
 variable "engine" {
-  description = "Engine for standard RDS"
+  description = "Engine for standard RDS (e.g., postgres)"
   type        = string
   default     = "postgres"
 }
@@ -42,7 +43,7 @@ variable "engine_version" {
 }
 
 variable "engine_cluster" {
-  description = "Engine for Aurora cluster"
+  description = "Engine for Aurora cluster (e.g., aurora-postgresql)"
   type        = string
   default     = "aurora-postgresql"
 }
@@ -54,77 +55,84 @@ variable "engine_version_cluster" {
 }
 
 variable "parameter_group_family_rds" {
-  type    = string
-  default = "postgres17"
+  description = "Parameter group family for standard RDS"
+  type        = string
+  default     = "postgres17"
 }
 
 variable "parameter_group_family_aurora" {
-  type    = string
-  default = "aurora-postgresql15"
+  description = "Parameter group family for Aurora cluster"
+  type        = string
+  default     = "aurora-postgresql15"
 }
 
 # Sizing & Scaling
 variable "instance_class" {
-  type    = string
-  default = "db.t3.small"
+  description = "Instance type for the database"
+  type        = string
+  default     = "db.t3.small"
 }
 
 variable "allocated_storage" {
-  type    = number
-  default = 20
+  description = "Storage size in GB (ignored by Aurora)"
+  type        = number
+  default     = 20
 }
 
-variable "aurora_instance_count" {
-  description = "Total number of instances (Writer + Readers)"
+variable "replica_count" {
+  description = "Total number of Aurora instances"
   type        = number
-  default     = 2
+  default     = 1
 }
 
 variable "multi_az" {
-  type    = bool
-  default = false
+  description = "Enable High Availability across multiple AZs"
+  type        = bool
+  default     = false
 }
 
 # Database Credentials
 variable "db_name" {
-  type = string
+  description = "The name of the initial database"
+  type        = string
 }
 
 variable "username" {
-  type = string
+  description = "Master username for the database"
+  type        = string
 }
 
 variable "password" {
-  type      = string
-  sensitive = true
+  description = "Master password for the database"
+  type        = string
+  sensitive   = true
 }
 
 # Network & Security
 variable "vpc_id" {
-  type = string
+  description = "VPC ID where the database will reside"
+  type        = string
 }
 
 variable "subnet_private_ids" {
-  type = list(string)
+  description = "List of private subnets for the database group"
+  type        = list(string)
 }
 
 variable "subnet_public_ids" {
-  type    = list(string)
-  default = []
-}
-
-variable "publicly_accessible" {
-  type    = bool
-  default = false
+  description = "List of public subnets"
+  type        = list(string)
+  default     = []
 }
 
 variable "backup_retention_period" {
-  type    = number
-  default = 7
+  description = "Number of days to retain backups"
+  type        = number
+  default     = 7
 }
 
 variable "parameters" {
-  description = "Map of DB parameters for the parameter group"
+  description = "Map of DB parameters for the custom parameter group"
   type        = map(string)
   default     = {}
 }

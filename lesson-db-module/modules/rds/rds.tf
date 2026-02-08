@@ -12,4 +12,9 @@ resource "aws_db_instance" "this" {
   vpc_security_group_ids = [aws_security_group.db_sg.id]
   parameter_group_name   = aws_db_parameter_group.this[0].name
   skip_final_snapshot    = true
+
+  # Connected variables
+  multi_az                = var.multi_az
+  backup_retention_period = var.backup_retention_period
+  tags                    = var.tags
 }

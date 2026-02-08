@@ -8,6 +8,10 @@ resource "aws_rds_cluster" "this" {
   db_subnet_group_name   = aws_db_subnet_group.this.name
   vpc_security_group_ids = [aws_security_group.db_sg.id]
   skip_final_snapshot    = true
+
+  # Connected variables
+  backup_retention_period = var.backup_retention_period
+  tags                    = var.tags
 }
 
 resource "aws_rds_cluster_instance" "this" {
@@ -16,4 +20,5 @@ resource "aws_rds_cluster_instance" "this" {
   cluster_identifier = aws_rds_cluster.this[0].id
   instance_class     = var.instance_class
   engine             = aws_rds_cluster.this[0].engine
+  tags               = var.tags
 }

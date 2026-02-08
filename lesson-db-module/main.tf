@@ -15,6 +15,14 @@ provider "aws" {
   region = var.aws_region
 }
 
+# Add locals to manage global tags efficiently
+locals {
+  common_tags = merge(var.tags, {
+    Project   = var.project_name
+    ManagedBy = "Terraform"
+  })
+}
+
 # Infrastructure Modules (The Foundation)
 
 module "vpc" {
@@ -46,29 +54,30 @@ module "rds" {
   name           = var.name
   use_aurora     = var.use_aurora
   instance_class = var.instance_class
-  
+
   # Engine Settings
   engine                 = var.engine
   engine_version         = var.engine_version
   engine_cluster         = var.engine_cluster
   engine_version_cluster = var.engine_version_cluster
-  
+
   # Credentials
   db_name  = var.db_name
   username = var.username
   password = var.password
 
   # Networking & Security
-  vpc_id              = module.vpc.vpc_id
-  subnet_private_ids  = module.vpc.subnet_private_ids
-  subnet_public_ids   = module.vpc.public_subnet_ids
-  eks_node_sg_id      = module.eks.node_security_group_id
-  
-  # Production Settings
+  vpc_id             = module.vpc.vpc_id
+  subnet_private_ids = module.vpc.subnet_private_ids
+  subnet_public_ids  = module.vpc.public_subnet_ids
+  eks_node_sg_id     = module.eks.node_security_group_id
+
+  # Production Settings - FULLY CONNECTED
+  replica_count           = var.replica_count
   multi_az                = var.multi_az
   backup_retention_period = var.backup_retention_period
   parameters              = var.parameters
-  tags                    = var.tags
+  tags                    = local.common_tags
 }
 
 module "eks" {

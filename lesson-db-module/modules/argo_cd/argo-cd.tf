@@ -17,9 +17,9 @@ resource "helm_release" "argo_cd" {
 
 # This installs "Application" manifests (the bridge to Django app)
 resource "helm_release" "argo_apps" {
-  name       = "argo-apps"
-  namespace  = var.namespace
-  chart      = "${path.module}/charts"
+  name      = "argo-apps"
+  namespace = var.namespace
+  chart     = "${path.module}/charts"
 
   # Wait for the controller to be ready before creating apps
   depends_on = [helm_release.argo_cd]

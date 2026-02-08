@@ -44,3 +44,15 @@ output "vpc_id" {
   description = "The ID of the VPC created for this project"
   value       = module.vpc.vpc_id
 }
+
+# --- GitOps & Jenkins Connectivity ---
+
+output "jenkins_service_url" {
+  description = "The internal Kubernetes DNS for Jenkins (if deployed)"
+  value       = "jenkins.jenkins.svc.cluster.local"
+}
+
+output "argo_cd_login_command" {
+  description = "Command to get Argo CD initial admin password"
+  value       = "kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d; echo"
+}

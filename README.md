@@ -13,21 +13,27 @@ The project is structured into independent, reusable modules. The root **main.tf
 
 ## Module Logic:
 The RDS/Aurora Toggle
-The RDS module is designed for "Environment Portability."
+The RDS module is built for Environment Portability. It uses conditional logic to switch between a cost-efficient single instance for development and a high-availability cluster for production.
 
-Terraform# Standard RDS (Development)
-use_aurora     = false
-instance_class = "db.t3.micro"
+Conditional Resource Deployment:
 
-## Aurora Cluster (Production)
-        use_aurora            = true
-        instance_class        = "db.t3.medium"
-        aurora_instance_count = 2
+- Standard RDS: Activated when use_aurora = false. Provisions a single aws_db_instance with multi_az support.
+
+- Aurora Cluster: Activated when use_aurora = true. Provisions an aws_rds_cluster with a configurable replica_count.
+
+    ## Aurora Cluster (Production)
+            use_aurora            = true
+            instance_class        = "db.t3.medium"
+            aurora_instance_count = 2
 
 ## Configuration & Deployment
-1. Variables (**terraform.tfvars**)
-Create this file locally (ignored by Git) to store environment specifics:
-VariableDescriptionExamplenameBase name for resourcesgoit-devops-hw03use_auroraEnable Aurora ClustertrueusernameMaster DB userpostgrespasswordMaster DB pass***********
+
+**Variable**                **Type**	**Description**
+use_aurora	                bool	    Toggle between Aurora Cluster and Standard RDS.
+multi_az	                bool	    Enables Deployment across multiple Availability Zones.
+backup_retention_period	    number	    Retention window (in days) for automated backups.
+tags	                    map	        Universal tagging applied to SG, Subnet Groups, and Instances.
+instance_class	            string	    Hardware tier (e.g., db.t3.micro).
 
 2. Deployment Sequence
 Inside multipass shell **minikube-vm**, run:
@@ -43,23 +49,35 @@ Inside multipass shell **minikube-vm**, run:
     # Deploy to AWS
         terraform apply "db.plan"
 
+![Validation Status](img/validation.png)
+
+## Deployment Example
+To deploy a production-ready Aurora cluster with 2 replicas and a 7-day backup window, configure terraform.tfvars as follows:
+
+        project_name            = "goit-devops-hw03"
+        use_aurora              = true
+        replica_count           = 2
+        instance_class          = "db.t3.medium"
+        backup_retention_period = 7
+        multi_az                = true
+        tags = {
+        Environment             = "Production"
+        Owner                   = "DevOps-Team"
+        }
+
 ## Security and PersistenceState Management:
 Configured in **backend.tf** using S3 for storage and DynamoDB for state locking.
 
 ### Security Group "Handshake" Logic
-The project implements a Least Privilege networking model. Instead of opening the database to the entire VPC, we use a dynamic security group reference:
+The project implements a Least Privilege networking model. The database is strictly isolated in private subnets and only accepts traffic via a dynamic reference to the EKS worker nodes.
 
-The Source: The EKS module exports the node_security_group_id.
-
-The Sink: The RDS module's Security Group accepts ingress only on port 5432 from that specific ID.
-
-    # modules/rds/main.tf
-    ingress {
-    from_port       = 5432
-    to_port         = 5432
-    protocol        = "tcp"
-    security_groups = [var.eks_node_sg_id] # Direct reference to EKS nodes
-    }
+    # modules/rds/shared.tf
+        ingress {
+        from_port       = var.db_port
+        to_port         = var.db_port
+        protocol        = "tcp"
+        security_groups = [var.eks_node_sg_id] # Handshake: Only allow EKS Nodes
+        }
 
 ## Credential Masking:
 All database credentials in **outputs.tf** are marked as sensitive = true to prevent accidental exposure in logs.
