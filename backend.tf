@@ -1,8 +1,8 @@
 /*
 terraform {
   backend "s3" {
-    bucket         = "dmzhuk-tf-state-rds" # Change this to bucket name
-    key            = "dev/lesson-db-module/terraform.tfstate"
+    bucket         = "dmzhuk-tf-state-rds"
+    key            = "dev/final-project/terraform.tfstate"
     region         = "eu-west-1"
     dynamodb_table = "terraform-state-lock"
     encrypt        = true

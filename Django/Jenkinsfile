@@ -1,0 +1,73 @@
+pipeline {
+  agent {
+    kubernetes {
+      yaml '''
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: kaniko
+    image: gcr.io/kaniko-project/executor:v1.16.0-debug
+    imagePullPolicy: Always
+    command: ["sleep"]
+    args: ["99d"]
+    volumeMounts:
+    - name: registry-creds
+      mountPath: /kaniko/.docker
+  - name: git
+    image: alpine/git
+    command: ["sleep"]
+    args: ["99d"]
+  volumes:
+  - name: registry-creds
+    secret:
+      secretName: regcred
+      items:
+      - key: .dockerconfigjson
+        path: config.json
+'''
+    }
+  }
+
+  environment {
+    REGISTRY = "829703038395.dkr.ecr.eu-west-1.amazonaws.com"
+    REPO_NAME = "final-project-ecr" 
+    IMAGE_TAG = "${env.BUILD_NUMBER}"
+    BRANCH_NAME = "final-project"
+  }
+
+  stages {
+    stage('Build & Push') {
+      steps {
+        container('kaniko') {
+          sh "/kaniko/executor --context ${WORKSPACE}/Django --dockerfile ${WORKSPACE}/Django/Dockerfile --destination ${REGISTRY}/${REPO_NAME}:${IMAGE_TAG} --destination ${REGISTRY}/${REPO_NAME}:latest --cache=true"
+        }
+      }
+    }
+
+    stage('Update GitOps') {
+      steps {
+        container('git') {
+          withCredentials([usernamePassword(credentialsId: 'github-pat', usernameVariable: 'U', passwordVariable: 'P')]) {
+            sh """
+              git config --global user.email "jenkins@ci"
+              git config --global user.name "jenkins"
+              
+              git clone -b ${BRANCH_NAME} https://\$U:\$P@github.com/dm-zhuk/goit-devops-hw-03.git temp_repo
+              cd temp_repo
+              
+              # Оновлено шлях до values.yaml відповідно до нової структури
+              sed -i "s|tag: .*|tag: '${IMAGE_TAG}'|" charts/django-app/values.yaml
+              
+              git add .
+              if ! git diff-index --quiet HEAD; then
+                git commit -m "chore: update image tag to ${IMAGE_TAG} [ci skip]"
+                git push origin ${BRANCH_NAME}
+              fi
+            """
+          }
+        }
+      }
+    }
+  }
+}

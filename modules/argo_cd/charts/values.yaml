@@ -3,6 +3,6 @@ app:
   namespace: "default"
 repo:
   url: "https://github.com/dm-zhuk/goit-devops-hw-03.git"
-  revision: "lesson-8-9"
-  path: "lesson-8-9/charts/django-app"
+  revision: "final-project"
+  path: "charts/django-app" 
 argoNamespace: "argocd"

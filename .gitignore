@@ -18,7 +18,7 @@ config.json
 !NOTES.txt
 
 # --- Helm ---
-!lesson-8-9/charts/django-app/charts/postgresql/
+!charts/django-app/charts/postgresql/
 
 # Explicitly allow sub-chart metadata that general rules might block
 !*/postgresql/*.json

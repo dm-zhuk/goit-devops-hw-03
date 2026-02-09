@@ -9,7 +9,7 @@ resource "aws_ecr_repository" "repo" {
   }
 
   tags = {
-    Name = "lesson-8-9-ecr-repo"
+    Name = "final-project-ecr-repo"
   }
 }
 
