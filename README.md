@@ -15,5 +15,7 @@ This repository serves as a hub for my DevOps learning journey. To keep the work
 
 - **[Lesson-db-module: Aurora & RDS](https://github.com/dm-zhuk/goit-devops-hw-03/tree/lesson-db-module)** - Django App CI/CD: Multi-Engine Database Module.
 
+- **[Final project: DevOps CI/CD](https://github.com/dm-zhuk/goit-devops-hw-03/tree/final-project)** - DevOps infrastructure deployment on AWS.
+
 ---
 *Main branch contains only this navigation guide. Switch branches to view specific project code.*
