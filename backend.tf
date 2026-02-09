@@ -1,10 +1,10 @@
 /*
 terraform {
   backend "s3" {
-    bucket         = "dmzhuk-tf-state-rds"
+    bucket         = "dmjuke-goit-tf-state-2026"
     key            = "dev/final-project/terraform.tfstate"
     region         = "eu-west-1"
-    dynamodb_table = "terraform-state-lock"
+    dynamodb_table = "terraform-locks"
     encrypt        = true
   }
 }

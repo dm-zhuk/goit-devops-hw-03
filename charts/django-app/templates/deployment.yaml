@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django
+  template:
+    metadata:
+      labels:
+        app: django
+    spec:
+    containers:
+    - name: django
+      image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+      env:
+    - name: DATABASE_URL
+      value: "{{ .Values.dbUrl }}"
+    - name: SECRET_KEY
+      value: "django-insecure-final-project-key"
+    - name: DEBUG
+      value: "False"
+    - name: ALLOWED_HOSTS
+      value: "{{ .Values.allowedHosts }}"
+    - name: nginx
+      image: nginx:1.25-alpine
+      ports:
+      - containerPort: 80

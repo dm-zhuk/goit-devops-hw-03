@@ -1,0 +1,23 @@
+replicaCount: 2
+
+image:
+  repository: "829703038395.dkr.ecr.eu-west-1.amazonaws.com/final-project-ecr"
+  tag: "latest"
+  pullPolicy: Always
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 8000
+
+# These values will be injected into the Django container
+dbUrl: "postgres://admin:pass@db-hostname:5432/django_db"
+allowedHosts: "localhost,127.0.0.1,.elb.amazonaws.com"
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
