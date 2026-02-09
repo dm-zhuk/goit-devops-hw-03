@@ -56,3 +56,15 @@ output "argo_cd_login_command" {
   description = "Command to get Argo CD initial admin password"
   value       = "kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d; echo"
 }
+
+# --- Prometheus & Grafana Accessibility ---
+
+output "grafana_url" {
+  description = "Command to access Grafana UI"
+  value       = "kubectl port-forward svc/kube-prometheus-stack-grafana 3000:80 -n monitoring"
+}
+
+output "prometheus_url" {
+  description = "Command to access Prometheus UI"
+  value       = "kubectl port-forward svc/kube-prometheus-stack-prometheus 9090 -n monitoring"
+}

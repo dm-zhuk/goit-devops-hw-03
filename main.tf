@@ -133,3 +133,17 @@ module "argo_cd" {
     kubernetes = kubernetes
   }
 }
+
+module "monitoring" {
+  source       = "./modules/monitoring"
+  project_name = var.project_name
+  namespace    = "monitoring"
+  tags         = local.common_tags
+
+  depends_on = [module.eks]
+
+  providers = {
+    helm       = helm
+    kubernetes = kubernetes
+  }
+}
