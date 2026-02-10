@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "terraform_state" {
-  bucket        = "dm-zhuk-tf-state-27" 
+  bucket        = "dm-zhuk-tf-state-27"
   force_destroy = true
 
   tags = {

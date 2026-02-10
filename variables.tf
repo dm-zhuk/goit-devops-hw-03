@@ -136,3 +136,9 @@ variable "parameters" {
   type        = map(string)
   default     = {}
 }
+
+variable "bucket_name" {
+  description = "The name of the S3 bucket for Terraform state storage"
+  type        = string
+  default     = "dm-zhuk-tf-state-27"
+}

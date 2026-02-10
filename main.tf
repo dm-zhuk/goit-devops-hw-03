@@ -38,7 +38,7 @@ module "s3_backend" {
 
 module "ecr" {
   source       = "./modules/ecr"
-  ecr_name     = "final-project-ecr" 
+  ecr_name     = "final-project-ecr"
   scan_on_push = true
 }
 
