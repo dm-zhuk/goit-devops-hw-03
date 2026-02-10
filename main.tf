@@ -2,13 +2,11 @@
 terraform {
   required_providers {
     aws        = { source = "hashicorp/aws", version = "~> 5.0" }
-    helm       = { source = "hashicorp/helm", version = "~> 2.0.0" }
-    kubernetes = { source = "hashicorp/kubernetes", version = "~> 2.0.0" }
+    # Update these two:
+    helm       = { source = "hashicorp/helm", version = "~> 2.15.0" }
+    kubernetes = { source = "hashicorp/kubernetes", version = "~> 2.31.0" }
   }
   required_version = "~> 1.5"
-
-  # Uncommentable after first 'apply' to move state to S3
-  # backend "s3" {} 
 }
 
 provider "aws" {
@@ -86,6 +84,9 @@ module "eks" {
   vpc_id        = module.vpc.vpc_id
   subnet_ids    = module.vpc.public_subnet_ids
   instance_type = "t3.small"
+  desired_size  = 3
+  max_size      = 4
+  min_size      = 2
 }
 
 # Dynamic Providers (The Handshake)
@@ -104,7 +105,7 @@ provider "helm" {
 provider "kubernetes" {
   host                   = module.eks.eks_cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.eks_cluster_certificate_authority)
-  token                  = data.aws_eks_cluster_auth.cluster.token
+  token                  = module.eks.eks_cluster_auth_token
 }
 
 # Application Modules (The Software)

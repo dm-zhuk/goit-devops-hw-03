@@ -15,6 +15,6 @@ resource "aws_db_instance" "this" {
 
   # Connected variables
   multi_az                = var.multi_az
-  backup_retention_period = var.backup_retention_period
+  backup_retention_period = 0
   tags                    = var.tags
 }
