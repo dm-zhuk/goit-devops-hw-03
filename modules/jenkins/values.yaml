@@ -1,28 +1,34 @@
 controller:
+  # 1. Identity & Security
   admin:
     username: admin
     existingSecret: "jenkins-admin-secret"
     existingSecretPasswordKey: "password"
 
+  # 2. Access (Exposing Jenkins to the Internet)
   serviceType: LoadBalancer
   service:
     port: 80
     targetPort: 8080
 
+  # 3. Resources for t3.small (2GB RAM)
   resources:
-    limits:
-      cpu: "1000m"
-      memory: "2Gi"
     requests:
-      cpu: "500m"
-      memory: "1Gi"
+      cpu: "300m"
+      memory: "512Mi"
+    limits:
+      cpu: "800m"
+      memory: "1200Mi"
+  javaOpts: "-Xms512m -Xmx1024m -Djenkins.install.runSetupWizard=false"
 
+  # 4. Storage (Persistence)
   persistence:
     enabled: true
-    storageClass: "standard"
-    size: 20Gi
+    storageClass: "ebs-sc" 
+    size: 10Gi
     accessMode: ReadWriteOnce
 
+  # 5. Mandatory Plugins for Pipeline
   installPlugins:
     - kubernetes:4155.v9611f016f5c3
     - workflow-aggregator:596.v8c21c963d92d
@@ -31,3 +37,4 @@ controller:
     - git:5.2.1
     - github:1.37.3
     - dark-theme:latest
+    - amazon-ecr:latest

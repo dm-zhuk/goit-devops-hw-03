@@ -16,20 +16,6 @@ resource "aws_iam_role_policy_attachment" "eks" {
   role       = aws_iam_role.eks.name
 }
 
-# --- EBS CSI Driver Storage Fix ---
-resource "aws_iam_role_policy_attachment" "node_ebs_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
-  role       = aws_iam_role.nodes.name
-}
-
-resource "aws_eks_addon" "ebs_csi" {
-  cluster_name = aws_eks_cluster.eks.name
-  addon_name   = "aws-ebs-csi-driver"
-
-  # Ensures the permissions exist before the driver starts
-  depends_on = [aws_iam_role_policy_attachment.node_ebs_policy]
-}
-
 # --- EKS Cluster Definition ---
 resource "aws_eks_cluster" "eks" {
   name     = var.cluster_name
@@ -44,7 +30,7 @@ resource "aws_eks_cluster" "eks" {
   depends_on = [aws_iam_role_policy_attachment.eks]
 }
 
-# --- Data Sources for Providers ---
+# Data sources for internal module use
 data "aws_eks_cluster_auth" "cluster" {
   name = aws_eks_cluster.eks.name
 }
