@@ -30,11 +30,26 @@ controller:
 
   # 5. Mandatory Plugins for Pipeline
   installPlugins:
-    - kubernetes:4155.v9611f016f5c3
-    - workflow-aggregator:596.v8c21c963d92d
-    - configuration-as-code:1777.v39e083f1ef68
-    - credentials-binding:665.v3f956f081442
+    - kubernetes
     - git:5.2.1
-    - github:1.37.3
-    - dark-theme:latest
-    - amazon-ecr:latest
+    - workflow-aggregator:596.v8c21c963d92d
+    - configuration-as-code:1932.v75cb_b_f1b_698d
+    - credentials-binding:687.v619cb_15e923f
+    
+  # 6. Health Checks (ВИПРАВЛЕНО ВІДСТУПИ)
+  readinessProbe:
+    failureThreshold: 10
+    httpGet:
+      path: /login
+      port: http
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 15 
+  livenessProbe:
+    failureThreshold: 10
+    httpGet:
+      path: /login
+      port: http
+    periodSeconds: 20
+    successThreshold: 1
+    timeoutSeconds: 15

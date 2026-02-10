@@ -1,5 +1,6 @@
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = var.bucket_name
+  bucket        = "dm-zhuk-tf-state-27" 
+  force_destroy = true
 
   tags = {
     Name        = "Terraform State Bucket"
@@ -7,6 +8,9 @@ resource "aws_s3_bucket" "terraform_state" {
     Project     = "goit-devops-hw-03"
   }
 }
+
+# Всі інші ресурси (versioning, encryption, public_access_block) 
+# мають посилатися на aws_s3_bucket.terraform_state.id
 
 resource "aws_s3_bucket_versioning" "versioning" {
   bucket = aws_s3_bucket.terraform_state.id

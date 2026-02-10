@@ -34,8 +34,8 @@ resource "aws_iam_role_policy_attachment" "ebs_irsa_policy" {
 
 # EKS Addon with the IRSA IAM role attached
 resource "aws_eks_addon" "ebs_csi_driver" {
-  cluster_name                = aws_eks_cluster.eks.name
-  addon_name                  = "aws-ebs-csi-driver"
+  cluster_name = aws_eks_cluster.eks.name
+  addon_name   = "aws-ebs-csi-driver"
   # version v1.41.0-eksbuild.1 is good for K8s 1.29-1.31
   service_account_role_arn    = aws_iam_role.ebs_csi_irsa_role.arn
   resolve_conflicts_on_update = "PRESERVE"
@@ -52,9 +52,9 @@ resource "kubernetes_storage_class" "ebs_sc" {
   metadata {
     name = "ebs-sc"
   }
-  storage_provisioner    = "ebs.csi.aws.com"
-  reclaim_policy         = "Retain"
-  volume_binding_mode    = "WaitForFirstConsumer"
+  storage_provisioner = "ebs.csi.aws.com"
+  reclaim_policy      = "Retain"
+  volume_binding_mode = "WaitForFirstConsumer"
   parameters = {
     type = "gp3"
   }

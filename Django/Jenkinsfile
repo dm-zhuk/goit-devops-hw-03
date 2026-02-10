@@ -8,11 +8,14 @@ spec:
   containers:
   - name: kaniko
     image: gcr.io/kaniko-project/executor:v1.16.0-debug
-    imagePullPolicy: Always
     command: ["sleep"]
     args: ["99d"]
-  - name: git
-    image: alpine/git
+  - name: python
+    image: python:3.10-slim
+    command: ["sleep"]
+    args: ["99d"]
+  - name: tools
+    image: alpine/k8s:1.29.2 # Містить і git, і helm, і kubectl
     command: ["sleep"]
     args: ["99d"]
 '''
@@ -24,16 +27,34 @@ spec:
     REPO_NAME = "final-project-ecr" 
     IMAGE_TAG = "${env.BUILD_NUMBER}"
     BRANCH_NAME = "final-project"
+    DB_HOST = "goit-devops-hw03-rds.cna8km4eqrdp.eu-west-1.rds.amazonaws.com"
   }
 
   stages {
     stage('Lint Helm Chart') {
-  steps {
-    container('git') { 
-       sh "helm lint charts/django-app"
+      steps {
+        container('tools') { 
+           sh "helm lint charts/django-app"
+        }
+      }
     }
-  }
-}
+
+    stage('DB Migration') {
+      steps {
+        container('python') {
+          withCredentials([usernamePassword(credentialsId: 'rds-db-creds', usernameVariable: 'DB_USER', passwordVariable: 'DB_PASS')]) {
+            sh """
+              pip install django psycopg2-binary
+              export DATABASE_URL=postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:5432/django_db
+              # Якщо проект у папці Django
+              cd Django
+              python manage.py migrate
+            """
+          }
+        }
+      }
+    }
+
     stage('Build & Push with Kaniko') {
       steps {
         container('kaniko') {
@@ -51,16 +72,17 @@ spec:
 
     stage('Update Helm Values') {
       steps {
-        container('git') {
+        container('tools') {
           withCredentials([usernamePassword(credentialsId: 'github-pat', usernameVariable: 'U', passwordVariable: 'P')]) {
             sh """
               git config --global user.email "jenkins@ci-cd"
               git config --global user.name "jenkins-bot"
               
+              # Очищаємо перед клонуванням
+              rm -rf temp_repo
               git clone -b ${BRANCH_NAME} https://\$U:\$P@github.com/dm-zhuk/goit-devops-hw-03.git temp_repo
               cd temp_repo
               
-              # Precisely targeting the tag in values.yaml
               sed -i "s/tag: .*/tag: \\"${IMAGE_TAG}\\"/" charts/django-app/values.yaml
               
               git add charts/django-app/values.yaml
