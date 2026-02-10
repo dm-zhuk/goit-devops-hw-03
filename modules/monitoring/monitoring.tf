@@ -11,7 +11,7 @@ resource "helm_release" "prometheus" {
   namespace  = kubernetes_namespace.monitoring.metadata[0].name
   version    = "61.3.1"
 
-  # Config for 't3.small'
+  # Config for 't3.medium'
   values = [
     <<-EOT
     grafana:

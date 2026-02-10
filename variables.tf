@@ -70,7 +70,7 @@ variable "parameter_group_family_aurora" {
 variable "instance_class" {
   description = "Instance type for the database"
   type        = string
-  default     = "db.t3.small"
+  default     = "db.t3.medium"
 }
 
 variable "allocated_storage" {

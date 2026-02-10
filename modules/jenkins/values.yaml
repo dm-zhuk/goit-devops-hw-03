@@ -11,7 +11,7 @@ controller:
     port: 80
     targetPort: 8080
 
-  # 3. Resources for t3.small (2GB RAM)
+  # 3. Resources
   resources:
     requests:
       cpu: "300m"
