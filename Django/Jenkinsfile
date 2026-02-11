@@ -27,8 +27,7 @@ spec:
     REPO_NAME = "final-project-ecr" 
     IMAGE_TAG = "${env.BUILD_NUMBER}"
     BRANCH_NAME = "final-project"
-    # Оновлений хост з вашого terraform.tfvars
-    DB_HOST = "goit-devops-hw03-rds.cna8km4eqrdp.eu-west-1.rds.amazonaws.com"
+    DB_HOST = "final-project-rds.cna8km4eqrdp.eu-west-1.rds.amazonaws.com"
   }
 
   stages {

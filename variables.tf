@@ -148,3 +148,8 @@ variable "grafana_admin_password" {
   type        = string
   sensitive   = true
 }
+
+variable "ecr_name" {
+  type        = string
+  description = "The name of the ECR repository"
+}

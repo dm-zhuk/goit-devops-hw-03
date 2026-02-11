@@ -19,7 +19,7 @@ locals {
   })
 }
 
-# Infrastructure Modules
+# --- Infrastructure Modules ---
 
 module "vpc" {
   source             = "./modules/vpc"
@@ -42,13 +42,25 @@ module "ecr" {
   scan_on_push = true
 }
 
+module "eks" {
+  source        = "./modules/eks"
+  cluster_name  = "${var.name}-cluster"
+  vpc_id        = module.vpc.vpc_id
+  # ВИПРАВЛЕНО: Ноди мають бути в приватних підмережах для безпеки та виходу через NAT Gateway
+  subnet_ids    = module.vpc.subnet_private_ids 
+  instance_type = "t3.medium"
+  desired_size  = 2
+  min_size      = 1
+  max_size      = 5
+}
+
 module "rds" {
   source = "./modules/rds"
 
   project_name   = var.name
   name           = var.name
   use_aurora     = var.use_aurora
-  instance_class = var.instance_class
+  instance_class = var.instance_class # Має бути db.t3.micro для Free Tier
 
   engine                 = var.engine
   engine_version         = var.engine_version
@@ -71,18 +83,8 @@ module "rds" {
   tags                    = local.common_tags
 }
 
-module "eks" {
-  source        = "./modules/eks"
-  cluster_name  = "${var.name}-cluster"
-  vpc_id        = module.vpc.vpc_id
-  subnet_ids    = module.vpc.public_subnet_ids
-  instance_type = "t3.medium"
-  desired_size  = 2
-  max_size      = 3
-  min_size      = 2
-}
+# --- Dynamic Providers (The Handshake) ---
 
-# Dynamic Providers (The Handshake)
 data "aws_eks_cluster_auth" "cluster" {
   name = module.eks.eks_cluster_name
 }
@@ -101,14 +103,15 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
-# Application Modules
+# --- Application Modules ---
 
 module "jenkins" {
   source       = "./modules/jenkins"
   cluster_name = module.eks.eks_cluster_name
   region       = var.aws_region
 
-  depends_on = [module.eks]
+  # Важливо: Jenkins потребує Ready-нод для запуску подів
+  depends_on = [module.eks] 
 
   providers = {
     helm       = helm
@@ -129,11 +132,11 @@ module "argo_cd" {
 }
 
 module "monitoring" {
-  source                 = "./modules/monitoring"
-  project_name           = var.name
-  namespace              = "monitoring"
-  tags                   = local.common_tags
-  grafana_admin_password = var.grafana_admin_password
+  source                  = "./modules/monitoring"
+  project_name            = var.name
+  namespace               = "monitoring"
+  tags                    = local.common_tags
+  grafana_admin_password  = var.grafana_admin_password
 
   depends_on = [module.eks]
 
