@@ -15,7 +15,7 @@ resource "helm_release" "prometheus" {
   values = [
     <<-EOT
     grafana:
-      adminPassword: "adminPass022027" # Sensitive! to be changed
+      adminPassword: "${var.grafana_admin_password}"
       service:
         type: ClusterIP
     prometheus:

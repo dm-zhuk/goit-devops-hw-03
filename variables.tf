@@ -140,5 +140,11 @@ variable "parameters" {
 variable "bucket_name" {
   description = "The name of the S3 bucket for Terraform state storage"
   type        = string
-  default     = "dm-zhuk-tf-state-27"
+  default     = "final-project-tf-state-27"
+}
+
+variable "grafana_admin_password" {
+  description = "Пароль адміністратора для Grafana"
+  type        = string
+  sensitive   = true
 }

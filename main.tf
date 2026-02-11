@@ -38,7 +38,7 @@ module "s3_backend" {
 
 module "ecr" {
   source       = "./modules/ecr"
-  ecr_name     = "final-project-ecr"
+  ecr_name     = var.ecr_name
   scan_on_push = true
 }
 
@@ -129,10 +129,11 @@ module "argo_cd" {
 }
 
 module "monitoring" {
-  source       = "./modules/monitoring"
-  project_name = var.name
-  namespace    = "monitoring"
-  tags         = local.common_tags
+  source                 = "./modules/monitoring"
+  project_name           = var.name
+  namespace              = "monitoring"
+  tags                   = local.common_tags
+  grafana_admin_password = var.grafana_admin_password
 
   depends_on = [module.eks]
 

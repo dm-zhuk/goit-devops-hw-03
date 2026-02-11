@@ -2,6 +2,3 @@ server:
   service:
     type: LoadBalancer
     port: 443
-configs:
-  secret:
-    argocdServerAdminPassword: $2a$10$...  # Replace with a bcrypt hashed password

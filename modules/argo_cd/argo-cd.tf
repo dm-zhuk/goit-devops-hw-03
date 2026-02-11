@@ -24,3 +24,11 @@ resource "helm_release" "argo_apps" {
   # Wait for the controller to be ready before creating apps
   depends_on = [helm_release.argo_cd]
 }
+
+data "kubernetes_service" "argo_cd_server" {
+  metadata {
+    name      = "argo-cd-server"
+    namespace = var.namespace
+  }
+  depends_on = [helm_release.argo_cd]
+}
