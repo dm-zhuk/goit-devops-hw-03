@@ -153,3 +153,9 @@ variable "ecr_name" {
   type        = string
   description = "The name of the ECR repository"
 }
+
+variable "instance_type" {
+  description = "EC2 instance type for the worker nodes"
+  type        = string
+  default     = "t2.small"
+}

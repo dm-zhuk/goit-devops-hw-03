@@ -48,10 +48,10 @@ module "eks" {
   vpc_id        = module.vpc.vpc_id
   # ВИПРАВЛЕНО: Ноди мають бути в приватних підмережах для безпеки та виходу через NAT Gateway
   subnet_ids    = module.vpc.subnet_private_ids 
-  instance_type = "t3.micro"
-  desired_size  = 3
+  instance_type = var.instance_type
+  desired_size  = 2
   min_size      = 1
-  max_size      = 5
+  max_size      = 3
 }
 
 module "rds" {
