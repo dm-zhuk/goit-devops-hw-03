@@ -46,12 +46,11 @@ module "eks" {
   source        = "./modules/eks"
   cluster_name  = "${var.name}-cluster"
   vpc_id        = module.vpc.vpc_id
-  # ВИПРАВЛЕНО: Ноди мають бути в приватних підмережах для безпеки та виходу через NAT Gateway
-  subnet_ids    = module.vpc.subnet_private_ids 
+  subnet_ids    = module.vpc.subnet_private_ids
   instance_type = var.instance_type
   desired_size  = 2
   min_size      = 1
-  max_size      = 3
+  max_size      = 2
 }
 
 module "rds" {
@@ -60,7 +59,7 @@ module "rds" {
   project_name   = var.name
   name           = var.name
   use_aurora     = var.use_aurora
-  instance_class = var.instance_class # Має бути db.t3.micro для Free Tier
+  instance_class = var.instance_class
 
   engine                 = var.engine
   engine_version         = var.engine_version
@@ -110,8 +109,7 @@ module "jenkins" {
   cluster_name = module.eks.eks_cluster_name
   region       = var.aws_region
 
-  # Важливо: Jenkins потребує Ready-нод для запуску подів
-  depends_on = [module.eks] 
+  depends_on = [module.eks]
 
   providers = {
     helm       = helm
@@ -132,11 +130,11 @@ module "argo_cd" {
 }
 
 module "monitoring" {
-  source                  = "./modules/monitoring"
-  project_name            = var.name
-  namespace               = "monitoring"
-  tags                    = local.common_tags
-  grafana_admin_password  = var.grafana_admin_password
+  source                 = "./modules/monitoring"
+  project_name           = var.name
+  namespace              = "monitoring"
+  tags                   = local.common_tags
+  grafana_admin_password = var.grafana_admin_password
 
   depends_on = [module.eks]
 
@@ -156,7 +154,7 @@ resource "kubernetes_config_map_v1_data" "aws_auth" {
   data = {
     mapRoles = yamlencode([
       {
-        rolearn  = "arn:aws:iam::829703038395:role/final-project-cluster-eks-nodes"
+        rolearn  = module.eks.node_role_arn
         username = "system:node:{{EC2PrivateDNSName}}"
         groups   = ["system:bootstrappers", "system:nodes"]
       }

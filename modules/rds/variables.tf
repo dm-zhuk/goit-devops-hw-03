@@ -15,7 +15,7 @@ variable "use_aurora" {
 
 variable "instance_class" {
   type        = string
-  description = "The compute instance type (e.g., db.t3.micro or db.t3.medium)"
+  description = "The compute instance type (e.g., db.t3.micro or db.t2.medium)"
 }
 
 variable "engine" {

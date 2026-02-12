@@ -70,7 +70,13 @@ variable "parameter_group_family_aurora" {
 variable "instance_class" {
   description = "Instance type for the database"
   type        = string
-  default     = "db.t3.medium"
+  default     = "db.t2.medium"
+}
+
+variable "instance_type" {
+  description = "EC2 instance type for worker nodes"
+  type        = string
+  default     = "t2.medium"
 }
 
 variable "allocated_storage" {
@@ -150,12 +156,6 @@ variable "grafana_admin_password" {
 }
 
 variable "ecr_name" {
-  type        = string
   description = "The name of the ECR repository"
-}
-
-variable "instance_type" {
-  description = "EC2 instance type for the worker nodes"
   type        = string
-  default     = "t2.small"
 }
