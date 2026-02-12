@@ -48,8 +48,8 @@ module "eks" {
   vpc_id        = module.vpc.vpc_id
   # ВИПРАВЛЕНО: Ноди мають бути в приватних підмережах для безпеки та виходу через NAT Gateway
   subnet_ids    = module.vpc.subnet_private_ids 
-  instance_type = "t3.medium"
-  desired_size  = 2
+  instance_type = "t3.micro"
+  desired_size  = 3
   min_size      = 1
   max_size      = 5
 }
@@ -144,4 +144,31 @@ module "monitoring" {
     helm       = helm
     kubernetes = kubernetes
   }
+}
+
+resource "kubernetes_config_map_v1_data" "aws_auth" {
+  force = true
+  metadata {
+    name      = "aws-auth"
+    namespace = "kube-system"
+  }
+
+  data = {
+    mapRoles = yamlencode([
+      {
+        rolearn  = "arn:aws:iam::829703038395:role/final-project-cluster-eks-nodes"
+        username = "system:node:{{EC2PrivateDNSName}}"
+        groups   = ["system:bootstrappers", "system:nodes"]
+      }
+    ])
+    mapUsers = yamlencode([
+      {
+        userarn  = "arn:aws:iam::829703038395:user/student-admin"
+        username = "dm-zhuk"
+        groups   = ["system:masters"]
+      }
+    ])
+  }
+
+  depends_on = [module.eks]
 }

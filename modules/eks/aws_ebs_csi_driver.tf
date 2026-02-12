@@ -36,13 +36,18 @@ resource "aws_iam_role_policy_attachment" "ebs_irsa_policy" {
 resource "aws_eks_addon" "ebs_csi_driver" {
   cluster_name = aws_eks_cluster.eks.name
   addon_name   = "aws-ebs-csi-driver"
-  # version v1.41.0-eksbuild.1 is good for K8s 1.29-1.31
-  service_account_role_arn    = aws_iam_role.ebs_csi_irsa_role.arn
+  service_account_role_arn = aws_iam_role.ebs_csi_irsa_role.arn
   resolve_conflicts_on_update = "PRESERVE"
+
+  configuration_values = jsonencode({
+    controller = {
+      replicaCount = 1
+    }
+  })
 
   depends_on = [
     aws_iam_role_policy_attachment.ebs_irsa_policy,
-    aws_eks_node_group.general # Driver needs nodes to exist first
+    aws_eks_node_group.general
   ]
 }
 
