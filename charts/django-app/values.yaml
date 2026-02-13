@@ -8,10 +8,10 @@ image:
 service:
   type: LoadBalancer
   port: 80
-  targetPort: 8000
+  targetPort: 80
 
 # These values will be injected into the Django container
-dbUrl: "postgres://admin:pass@db-hostname:5432/django_db"
+dbUrl: "postgres://db_user:pass02Word2027@final-project-rds.cna8km4eqrdp.eu-west-1.rds.amazonaws.com:5432/django_db"
 allowedHosts: "localhost,127.0.0.1,.elb.amazonaws.com"
 
 resources:
