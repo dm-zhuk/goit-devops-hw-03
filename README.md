@@ -85,7 +85,7 @@ helm upgrade --install django-app . -f values.yaml
 IaC:
 
 ```bash
-cd terraform/
+cd goit-devops-hw-03/
 terraform init
 terraform apply
 ```
@@ -108,7 +108,7 @@ helm upgrade --install django-app . -f values.yaml
 
 - Pods Status:
 
-![Pods Status](img/pds.png)
+![Pods Status](img/pods.png)
 
 - Service Availability (LB IP):
 
