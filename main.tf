@@ -8,6 +8,22 @@ terraform {
   required_version = "~> 1.5"
 }
 
+terraform {
+  backend "s3" {
+    bucket         = "final-project-tf-state-27"
+    key            = "dev/final-project/terraform.tfstate"
+    region         = "eu-west-1"
+    dynamodb_table = "terraform-locks"
+    encrypt        = true
+  }
+
+  required_providers {
+    aws        = { source = "hashicorp/aws", version = "~> 5.0" }
+    helm       = { source = "hashicorp/helm", version = "~> 2.15.0" }
+    kubernetes = { source = "hashicorp/kubernetes", version = "~> 2.31.0" }
+  }
+}
+
 provider "aws" {
   region = var.aws_region
 }
@@ -104,7 +120,6 @@ provider "kubernetes" {
 
 # --- Application Modules ---
 
-/*
 module "jenkins" {
   source       = "./modules/jenkins"
   cluster_name = module.eks.eks_cluster_name
@@ -117,7 +132,6 @@ module "jenkins" {
     kubernetes = kubernetes
   }
 }
-*/
 
 module "argo_cd" {
   source    = "./modules/argo_cd"
