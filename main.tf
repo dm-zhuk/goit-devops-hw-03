@@ -48,9 +48,9 @@ module "eks" {
   vpc_id        = module.vpc.vpc_id
   subnet_ids    = module.vpc.subnet_private_ids
   instance_type = var.instance_type
-  desired_size  = 2
-  min_size      = 1
-  max_size      = 2
+  desired_size  = 8
+  min_size      = 5
+  max_size      = 10
 }
 
 module "rds" {
@@ -104,6 +104,7 @@ provider "kubernetes" {
 
 # --- Application Modules ---
 
+/*
 module "jenkins" {
   source       = "./modules/jenkins"
   cluster_name = module.eks.eks_cluster_name
@@ -116,6 +117,7 @@ module "jenkins" {
     kubernetes = kubernetes
   }
 }
+*/
 
 module "argo_cd" {
   source    = "./modules/argo_cd"

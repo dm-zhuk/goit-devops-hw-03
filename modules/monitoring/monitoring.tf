@@ -10,8 +10,8 @@ resource "helm_release" "prometheus" {
   chart      = "kube-prometheus-stack"
   namespace  = kubernetes_namespace.monitoring.metadata[0].name
   version    = "61.3.1"
+  wait       = false
 
-  # Config for 't3.medium'
   values = [
     <<-EOT
     grafana:

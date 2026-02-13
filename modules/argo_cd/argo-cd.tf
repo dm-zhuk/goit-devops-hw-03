@@ -4,8 +4,8 @@ resource "helm_release" "argo_cd" {
   chart            = "argo-cd"
   namespace        = var.namespace
   create_namespace = true
-  # timeout = 1200
-  skip_crds = false
+  wait             = false
+  skip_crds        = false
 
   values = [
     file("${path.module}/values.yaml")

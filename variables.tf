@@ -70,13 +70,13 @@ variable "parameter_group_family_aurora" {
 variable "instance_class" {
   description = "Instance type for the database"
   type        = string
-  default     = "db.t2.medium"
+  default     = "db.t3.micro"
 }
 
 variable "instance_type" {
   description = "EC2 instance type for worker nodes"
   type        = string
-  default     = "t2.medium"
+  default     = "t3.micro"
 }
 
 variable "allocated_storage" {
@@ -115,22 +115,6 @@ variable "password" {
 }
 
 # Network & Security
-variable "vpc_id" {
-  description = "VPC ID where the database will reside"
-  type        = string
-}
-
-variable "subnet_private_ids" {
-  description = "List of private subnets for the database group"
-  type        = list(string)
-}
-
-variable "subnet_public_ids" {
-  description = "List of public subnets"
-  type        = list(string)
-  default     = []
-}
-
 variable "backup_retention_period" {
   description = "Number of days to retain backups"
   type        = number
