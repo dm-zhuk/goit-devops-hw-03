@@ -5,15 +5,24 @@ image:
   tag: "latest"
   pullPolicy: Always
 
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+
 service:
   type: LoadBalancer
   port: 80
   targetPort: 80
 
-# These values will be injected into the Django container
-dbUrl: "postgres://db_user:pass02Word2027@final-project-rds.cna8km4eqrdp.eu-west-1.rds.amazonaws.com:5432/django_db"
-allowedHosts: "localhost,127.0.0.1,.elb.amazonaws.com"
+django:
+  secretKey: "your-very-secure-secret-key-here"
 
+# Налаштування додатка (актуальні Endpoint)
+dbUrl: "postgres://db_user:pass02Word2027@final-project-db.cluster-c7m2is6is8u4.eu-west-1.rds.amazonaws.com:5432/django_db"
+allowedHosts: "*"
+
+# Ресурси (важливо для стабільності на t3.micro)
 resources:
   limits:
     cpu: 200m

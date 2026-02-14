@@ -24,8 +24,12 @@ spec:
           env:
             - name: DATABASE_URL
               value: "{{ .Values.dbUrl }}"
+
             - name: SECRET_KEY
-              value: "django-insecure-final-project-key"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "django-app.fullname" . }}-secrets
+                  key: SECRET_KEY
             - name: DEBUG
               value: "False"
             - name: ALLOWED_HOSTS
